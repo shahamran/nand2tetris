@@ -9,20 +9,20 @@ CHIP Mul{
 		// Performs binary-long-multiplication, similar to decimal multiplication
 		
 		// Get all shifted versions of 'a'
-		ShiftLeft(in = a, out = sh1a);
-		ShiftLeft(in = sh1a, out = sh2a);
-		ShiftLeft(in = sh2a, out = sh3a);
-		ShiftLeft(in = sh3a, out = sh4a);
-		ShiftLeft(in = sh4a, out = sh5a);
-		ShiftLeft(in = sh5a, out = sh6a);
-		ShiftLeft(in = sh6a, out = sh7a);
-		ShiftLeft(in = sh7a, out = sh8a);
-		ShiftLeft(in = sh8a, out = sh9a);
-		ShiftLeft(in = sh9a, out = sh10a);
-		ShiftLeft(in = sh10a, out = sh11a);
-		ShiftLeft(in = sh11a, out = sh12a);
-		ShiftLeft(in = sh12a, out = sh13a);
-		ShiftLeft(in = sh13a, out = sh14a);
+		ShiftLeft(in=a, out=sh1a);
+		ShiftLeft(in=sh1a, out=sh2a);
+		ShiftLeft(in=sh2a, out=sh3a);
+		ShiftLeft(in=sh3a, out=sh4a);
+		ShiftLeft(in=sh4a, out=sh5a);
+		ShiftLeft(in=sh5a, out=sh6a);
+		ShiftLeft(in=sh6a, out=sh7a);
+		ShiftLeft(in=sh7a, out=sh8a);
+		ShiftLeft(in=sh8a, out=sh9a);
+		ShiftLeft(in=sh9a, out=sh10a);
+		ShiftLeft(in=sh10a, out=sh11a);
+		ShiftLeft(in=sh11a, out=sh12a);
+		ShiftLeft(in=sh12a, out=sh13a);
+		ShiftLeft(in=sh13a, out=sh14a);
 
 		// The 'multiplication' operation
 		And16(a=a, b[0]=b[0], b[1]=b[0], b[2]=b[0], b[3]=b[0], b[4]=b[0], b[5]=b[0], b[6]=b[0], b[7]=b[0], b[8]=b[0], b[9]=b[0], b[10]=b[0], b[11]=b[0], b[12]=b[0], b[13]=b[0], b[14]=b[0], b[15]=b[0], out=o0);

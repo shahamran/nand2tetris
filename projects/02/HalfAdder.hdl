@@ -13,6 +13,7 @@ CHIP HalfAdder {
         carry;  // Left bit of a + b
 
     PARTS:
+        // Simple half-adder implementation according to the truth-table.
 		Xor(a=a, b=b, out=sum);
 		And(a=a, b=b, out=carry);
 }

@@ -1,4 +1,7 @@
-CHIP ShiftLeft{
+/**
+ * Multiplies a 16-bit number by 2 by shifthing each bit (except the MSB) left.
+ */
+CHIP ShiftLeft {
      IN in[16];
      OUT out[16];
      

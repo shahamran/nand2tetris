@@ -1,0 +1,32 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@cs.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                           Project 2 - Boolean Arithmetic
+                           --------------------------------------------
+  
+
+Submitted Files
+---------------
+README - This file.
+HalfAdder.hdl - Adds two bits and outputs the sum and carry
+FullAdder.hdl - Adds three bits and outputs the sum and carry
+Add16.hdl - Adds two 16-bit integer numbers
+Inc16.hdl - Increments a 16-bit number
+ALU.hdl - The Arithmetic Logic Unit
+ShiftLeft.hdl - Multiplies a 16-bit input number by 2 (ignoring overflow)
+ShiftRight.hdl - Devides a 16-bit input number by 2 without remainder
+Mul.hdl - Multiplies two 16-bit numbers.
+
+Remarks
+-------
+* The multiplication chip was implemented according to long-multiplication algorithm
+  where multiplication of each two bits x,y is just the And(x,y) operation.
+  This method's shortcoming is the negative overflowing results which turns very small
+  negative numbers to positive.
+  Nonetheless, this method works well on the supplied test and in the exercise forum
+  it is clearly written that it is sufficient.
+* All other chips had simple implementations that were drawn directly from the lectures
+  and simple logic.
