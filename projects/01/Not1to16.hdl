@@ -1,0 +1,28 @@
+/**
+ * 1-bit to 16-bit Not: 
+ * for i = 0..15 out[i] = Not(in)
+ */
+
+CHIP Not1to16 {
+    IN in;
+    OUT out[16];
+
+    PARTS:
+		// Each output pin gets the same value - Not(in)
+		Not(in=in, out=out[0]);
+		Not(in=in, out=out[1]);
+		Not(in=in, out=out[2]);
+		Not(in=in, out=out[3]);
+		Not(in=in, out=out[4]);
+		Not(in=in, out=out[5]);
+		Not(in=in, out=out[6]);
+		Not(in=in, out=out[7]);
+		Not(in=in, out=out[8]);
+		Not(in=in, out=out[9]);
+		Not(in=in, out=out[10]);
+		Not(in=in, out=out[11]);
+		Not(in=in, out=out[12]);
+		Not(in=in, out=out[13]);
+		Not(in=in, out=out[14]);
+		Not(in=in, out=out[15]);
+}

@@ -1,0 +1,92 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/Mux4Way16.hdl
+
+/**
+ * 4-way 16-bit multiplexor:
+ * out = a if sel == 00
+ *       b if sel == 01
+ *       c if sel == 10
+ *       d if sel == 11
+ */
+
+CHIP Mux4Way16 {
+    IN a[16], b[16], c[16], d[16], sel[2];
+    OUT out[16];
+
+    PARTS:
+    Not(in = sel[0], out = nsel0);
+	Not(in = sel[1], out = nsel1);
+	And(a = nsel0, b = nsel1, out = sela);
+	And(a = nsel0, b = sel[1], out = selc);
+	And(a = sel[0], b = nsel1, out = selb);
+	And(a = sel[0], b = sel[1], out = seld);
+	And16(a = a, b[0] = sela,
+				 b[1] = sela,
+				 b[2] = sela,
+				 b[3] = sela,
+				 b[4] = sela,
+				 b[5] = sela,
+				 b[6] = sela,
+				 b[7] = sela,
+				 b[8] = sela,
+				 b[9] = sela,
+				 b[10] = sela,
+				 b[11] = sela,
+				 b[12] = sela,
+				 b[13] = sela,
+				 b[14] = sela,
+				 b[15] = sela, out = d1);
+	And16(a = b, b[0] = selb,
+				 b[1] = selb,
+				 b[2] = selb,
+				 b[3] = selb,
+				 b[4] = selb,
+				 b[5] = selb,
+				 b[6] = selb,
+				 b[7] = selb,
+				 b[8] = selb,
+				 b[9] = selb,
+				 b[10] = selb,
+				 b[11] = selb,
+				 b[12] = selb,
+				 b[13] = selb,
+				 b[14] = selb,
+				 b[15] = selb, out = d2);
+	And16(a = c, b[0] = selc,
+				 b[1] = selc,
+				 b[2] = selc,
+				 b[3] = selc,
+				 b[4] = selc,
+				 b[5] = selc,
+				 b[6] = selc,
+				 b[7] = selc,
+				 b[8] = selc,
+				 b[9] = selc,
+				 b[10] = selc,
+				 b[11] = selc,
+				 b[12] = selc,
+				 b[13] = selc,
+				 b[14] = selc,
+				 b[15] = selc, out = d3);
+	And16(a = d, b[0] = seld,
+				 b[1] = seld,
+				 b[2] = seld,
+				 b[3] = seld,
+				 b[4] = seld,
+				 b[5] = seld,
+				 b[6] = seld,
+				 b[7] = seld,
+				 b[8] = seld,
+				 b[9] = seld,
+				 b[10] = seld,
+				 b[11] = seld,
+				 b[12] = seld,
+				 b[13] = seld,
+				 b[14] = seld,
+				 b[15] = seld, out = d4);
+	Or16(a = d1, b = d2, out = c1);
+	Or16(a = c1, b = d3, out = c2);
+	Or16(a = c2, b = d4, out = out);
+}

@@ -1,0 +1,37 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@cs.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                           Project 1 - Boolean Logic
+                           -------------------------
+  
+
+Submitted Files
+---------------
+README - This file.
+Not.hdl - The Not chip.
+And.hdl - The And chip.
+Or.hdl - The Or chip.
+Xor.hdl - The Xor chip.
+Mux.hdl - The Mux chip.
+DMux.hdl - The DMux chip.
+Nand16.hdl - 16-bit version of the Nand chip.
+Not16.hdl - 16-bit Not.
+And16.hdl - 16-bit And.
+Or16.hdl - 16-bit Or.
+Not1to16.hdl - Duplicates Not(in) 16 times.
+Mux16.hdl - 16-bit Mux
+Or8Way.hdl - 8 Way Or chip.
+Mux4Way16.hdl - 4 Way 16-bit Mux chip.
+Mux8Way16.hdl - 8 Way 16-bit Mux.
+DMux4Way.hdl - 4 Way DMux.
+DMux8Way.hdl - 8 Way DMux.
+
+Remarks
+-------
+* We added two gates in order to simplify the implementation of more complex chips.
+  Those chips are the 16-bit Nand gate with which we were able to implement most of the multi-bit chips
+  just like the single-bit versions, and the Not1to16 that helped mainly with the complex Mux chip 
+  (specifically, dealing with the multi-bit data inputs vs. single-bit sel input).

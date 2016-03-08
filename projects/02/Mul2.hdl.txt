@@ -1,0 +1,11 @@
+CHIP Mul{
+    IN a[2], b[2];
+    OUT out[2];
+
+    PARTS:
+			
+		And16(a=a, b[0]=b[0], b[1]=b[0], out=o0);
+		And16(a=a, b[0]=b[1], b[1]=b[1], out=o1);
+		
+		Add16(a=o0, b[0]=false ,b[1] = o1[0], out=out);
+}

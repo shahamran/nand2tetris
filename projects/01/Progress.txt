@@ -1,0 +1,15 @@
+Not	- v
+And	- v
+Or	- v
+Xor	- v
+Mux	- v
+DMux	- v
+Not16	- v
+And16	- v
+Or16	- v
+Mux16	- v
+Or8Way	- v
+Mux4Way16	- v
+Mux8Way16	- v
+DMux4Way	- v
+DMux8Way	- v

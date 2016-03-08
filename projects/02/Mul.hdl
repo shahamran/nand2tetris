@@ -1,0 +1,59 @@
+/**
+ * Multiplies two signed 16-bit numbers.
+ */
+CHIP Mul{
+    IN a[16], b[16];
+    OUT out[16];
+
+    PARTS:
+		// Performs binary-long-multiplication, similar to decimal multiplication
+		
+		// Get all shifted versions of 'a'
+		ShiftLeft(in = a, out = sh1a);
+		ShiftLeft(in = sh1a, out = sh2a);
+		ShiftLeft(in = sh2a, out = sh3a);
+		ShiftLeft(in = sh3a, out = sh4a);
+		ShiftLeft(in = sh4a, out = sh5a);
+		ShiftLeft(in = sh5a, out = sh6a);
+		ShiftLeft(in = sh6a, out = sh7a);
+		ShiftLeft(in = sh7a, out = sh8a);
+		ShiftLeft(in = sh8a, out = sh9a);
+		ShiftLeft(in = sh9a, out = sh10a);
+		ShiftLeft(in = sh10a, out = sh11a);
+		ShiftLeft(in = sh11a, out = sh12a);
+		ShiftLeft(in = sh12a, out = sh13a);
+		ShiftLeft(in = sh13a, out = sh14a);
+
+		// The 'multiplication' operation
+		And16(a=a, b[0]=b[0], b[1]=b[0], b[2]=b[0], b[3]=b[0], b[4]=b[0], b[5]=b[0], b[6]=b[0], b[7]=b[0], b[8]=b[0], b[9]=b[0], b[10]=b[0], b[11]=b[0], b[12]=b[0], b[13]=b[0], b[14]=b[0], b[15]=b[0], out=o0);
+		And16(a=sh1a, b[0]=b[1], b[1]=b[1], b[2]=b[1], b[3]=b[1], b[4]=b[1], b[5]=b[1], b[6]=b[1], b[7]=b[1], b[8]=b[1], b[9]=b[1], b[10]=b[1], b[11]=b[1], b[12]=b[1], b[13]=b[1], b[14]=b[1], b[15]=b[1], out=o1);
+		And16(a=sh2a, b[0]=b[2], b[1]=b[2], b[2]=b[2], b[3]=b[2], b[4]=b[2], b[5]=b[2], b[6]=b[2], b[7]=b[2], b[8]=b[2], b[9]=b[2], b[10]=b[2], b[11]=b[2], b[12]=b[2], b[13]=b[2], b[14]=b[2], b[15]=b[2], out=o2);
+		And16(a=sh3a, b[0]=b[3], b[1]=b[3], b[2]=b[3], b[3]=b[3], b[4]=b[3], b[5]=b[3], b[6]=b[3], b[7]=b[3], b[8]=b[3], b[9]=b[3], b[10]=b[3], b[11]=b[3], b[12]=b[3], b[13]=b[3], b[14]=b[3], b[15]=b[3], out=o3);
+		And16(a=sh4a, b[0]=b[4], b[1]=b[4], b[2]=b[4], b[3]=b[4], b[4]=b[4], b[5]=b[4], b[6]=b[4], b[7]=b[4], b[8]=b[4], b[9]=b[4], b[10]=b[4], b[11]=b[4], b[12]=b[4], b[13]=b[4], b[14]=b[4], b[15]=b[4], out=o4);
+		And16(a=sh5a, b[0]=b[5], b[1]=b[5], b[2]=b[5], b[3]=b[5], b[4]=b[5], b[5]=b[5], b[6]=b[5], b[7]=b[5], b[8]=b[5], b[9]=b[5], b[10]=b[5], b[11]=b[5], b[12]=b[5], b[13]=b[5], b[14]=b[5], b[15]=b[5], out=o5);
+		And16(a=sh6a, b[0]=b[6], b[1]=b[6], b[2]=b[6], b[3]=b[6], b[4]=b[6], b[5]=b[6], b[6]=b[6], b[7]=b[6], b[8]=b[6], b[9]=b[6], b[10]=b[6], b[11]=b[6], b[12]=b[6], b[13]=b[6], b[14]=b[6], b[15]=b[6], out=o6);
+		And16(a=sh7a, b[0]=b[7], b[1]=b[7], b[2]=b[7], b[3]=b[7], b[4]=b[7], b[5]=b[7], b[6]=b[7], b[7]=b[7], b[8]=b[7], b[9]=b[7], b[10]=b[7], b[11]=b[7], b[12]=b[7], b[13]=b[7], b[14]=b[7], b[15]=b[7], out=o7);
+		And16(a=sh8a, b[0]=b[8], b[1]=b[8], b[2]=b[8], b[3]=b[8], b[4]=b[8], b[5]=b[8], b[6]=b[8], b[7]=b[8], b[8]=b[8], b[9]=b[8], b[10]=b[8], b[11]=b[8], b[12]=b[8], b[13]=b[8], b[14]=b[8], b[15]=b[8], out=o8);
+		And16(a=sh9a, b[0]=b[9], b[1]=b[9], b[2]=b[9], b[3]=b[9], b[4]=b[9], b[5]=b[9], b[6]=b[9], b[7]=b[9], b[8]=b[9], b[9]=b[9], b[10]=b[9], b[11]=b[9], b[12]=b[9], b[13]=b[9], b[14]=b[9], b[15]=b[9], out=o9);
+		And16(a=sh10a, b[0]=b[10], b[1]=b[10], b[2]=b[10], b[3]=b[10], b[4]=b[10], b[5]=b[10], b[6]=b[10], b[7]=b[10], b[8]=b[10], b[9]=b[10], b[10]=b[10], b[11]=b[10], b[12]=b[10], b[13]=b[10], b[14]=b[10], b[15]=b[10], out=o10);
+		And16(a=sh11a, b[0]=b[11], b[1]=b[11], b[2]=b[11], b[3]=b[11], b[4]=b[11], b[5]=b[11], b[6]=b[11], b[7]=b[11], b[8]=b[11], b[9]=b[11], b[10]=b[11], b[11]=b[11], b[12]=b[11], b[13]=b[11], b[14]=b[11], b[15]=b[11], out=o11);
+		And16(a=sh12a, b[0]=b[12], b[1]=b[12], b[2]=b[12], b[3]=b[12], b[4]=b[12], b[5]=b[12], b[6]=b[12], b[7]=b[12], b[8]=b[12], b[9]=b[12], b[10]=b[12], b[11]=b[12], b[12]=b[12], b[13]=b[12], b[14]=b[12], b[15]=b[12], out=o12);
+		And16(a=sh13a, b[0]=b[13], b[1]=b[13], b[2]=b[13], b[3]=b[13], b[4]=b[13], b[5]=b[13], b[6]=b[13], b[7]=b[13], b[8]=b[13], b[9]=b[13], b[10]=b[13], b[11]=b[13], b[12]=b[13], b[13]=b[13], b[14]=b[13], b[15]=b[13], out=o13);
+		And16(a=sh14a, b[0]=b[14], b[1]=b[14], b[2]=b[14], b[3]=b[14], b[4]=b[14], b[5]=b[14], b[6]=b[14], b[7]=b[14], b[8]=b[14], b[9]=b[14], b[10]=b[14], b[11]=b[14], b[12]=b[14], b[13]=b[14], b[14]=b[14], b[15]=b[14], out=o14);
+		
+		// Sum all prodcuts
+		Add16(a=o0, b=o1, out=a1);
+		Add16(a=a1, b=o2, out=a2);
+		Add16(a=a2, b=o3, out=a3);
+		Add16(a=a3, b=o4, out=a4);
+		Add16(a=a4, b=o5, out=a5);
+		Add16(a=a5, b=o6, out=a6);
+		Add16(a=a6, b=o7, out=a7);
+		Add16(a=a7, b=o8, out=a8);
+		Add16(a=a8, b=o9, out=a9);
+		Add16(a=a9, b=o10, out=a10);
+		Add16(a=a10, b=o11, out=a11);
+		Add16(a=a11, b=o12, out=a12);
+		Add16(a=a12, b=o13, out=a13);
+		Add16(a=a13, b=o14, out=out);
+}
