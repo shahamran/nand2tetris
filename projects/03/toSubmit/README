@@ -1,0 +1,27 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@cs.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                           Project 3 - Sequential Logic
+                           -----------------------------
+  
+
+Submitted Files
+---------------
+README		-	This file.
+a/Bit.hdl	-	1-bit register.
+a/Register.hdl	-	16-bit register.
+a/RAM8.hdl		-	Memory of 8 16-bit registers.
+a/RAM64.hdl		-	Memory of 64 registers.
+b/RAM512.hdl	-	Memory of 512 registers.
+b/RAM4K.hdl		-	Memory of 4096 registers.
+b/RAM16K.hdl	-	Memory of ~160000 registers.
+a/PC.hdl		-	The program counter chip.
+
+Remarks
+-------
+* 
+* All other chips had simple implementations that were drawn directly from the lectures
+  and simple logic.
