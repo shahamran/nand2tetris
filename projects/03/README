@@ -22,6 +22,7 @@ a/PC.hdl		-	The program counter chip.
 
 Remarks
 -------
-* 
+* The logic in the PC chip was to store the data across time using a register and manipulate
+  it in the correct manner using a multiplexer.
 * All other chips had simple implementations that were drawn directly from the lectures
   and simple logic.
