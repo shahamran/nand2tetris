@@ -8,57 +8,72 @@
 // i.e. writes "black" in every pixel. When no key is pressed, the
 // program clears the screen, i.e. writes "white" in every pixel.
 
-(CHECK)
-	@i
-	M=0
-	@KBD
-	D=M
-
-	@BLACK
-	D; JNE
-	
-	@i
-	M=0
-	D=M
-(WHITE)
-	// if i > 8,192:
-	//    goto CHECK
-	// (SCREEN_MEMORY_SIZE == 8192)
+	// Initialize a constant variable SCREEN_SIZE
 	@8192
 	D=A
+	@SCREEN_SIZE
+	M=D
+
+(CHECK)
+	// Initialize i = 0
+	@i
+	M=0
+	// Get the keyboard input
+	@KBD
+	D=M
+	
+	// If any key is pressed, go BACK to BLACK
+	@BLACK
+	D; JNE
+	// Else, continue to WHITE
+	
+(WHITE)
+	@SCREEN_SIZE
+	D=M
 	@i
 	D=M-D
+	
+	// if i > SCREEN_SIZE:
+	//    goto CHECK
 	@CHECK
 	D; JGE
 	
+	// SCREEN[i] = 0
 	@i
 	D=M
 	@SCREEN
 	A=A+D
 	M=0
+	// ++i
 	@i
 	M=M+1
+	
+	// Loop
 	@WHITE
 	0; JMP
 	
 (BLACK)
-	// if i > 8,192:
-	//    goto CHECK
-	// (SCREEN_MEMORY_SIZE == 8192)
-	@8192
-	D=A
+	@SCREEN_SIZE
+	D=M
 	@i
 	D=M-D
+	
+	// if i > SCREEN_SIZE:
+	//    goto CHECK
 	@CHECK
 	D; JGE
 	
+	// SCREEN[i]=-1
 	@i
 	D=M
 	@SCREEN
 	A=A+D
 	M=-1
+	// ++i
 	@i
 	M=M+1
+	
+	// Loop
 	@BLACK
 	0; JMP
 
