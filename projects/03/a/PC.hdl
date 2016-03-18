@@ -19,20 +19,10 @@ CHIP PC {
 		// Increment the output
 		Inc16(in=regout, out=incout);
 		
-		
-		// We need to decide which of the following is better. Both work.
-		
 		// According to control bits, decide what will be the register input
 		Mux4Way16(a=regout, b=incout, c=in, d=in, sel[0]=inc, sel[1]=load, out=regin1);
 		Mux16(a=regin1, b=false, sel=reset, out=regin);
-		
-		/*
-		 * // According to control bits, decide what will be the register input
-		 * Mux8Way16(a=regout,   b=incout,    c=in,         d=in,
-		 *		  e=false,    f=false,     g=false,      h=false,
-		 *		  sel[0]=inc, sel[1]=load, sel[2]=reset, out=regin);
-		 */
-		
+				
 		// If one of the control bits is on, the register should be loaded
 		Or8Way(in[0]=inc, in[1]=load, in[2]=reset, in[3..7]=false, out=regload);
 		

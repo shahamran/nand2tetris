@@ -15,7 +15,7 @@ CHIP RAM16K {
     OUT out[16];
 
     PARTS:
-		// Same as previous chips, only a bit smaller
+		// Same as previous chips, only a bit smaller (actually, A LOT of bits smaller, but that's abstracted)
 		DMux4Way(in=load, sel=address[12..13], 
 				 a=load0, b=load1, c=load2, d=load3);
 				 
