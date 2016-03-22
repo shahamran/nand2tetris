@@ -1,0 +1,28 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@mail.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                           Project 4 - Machine Language Programming
+                           ----------------------------------------
+  
+
+Submitted Files
+---------------
+README		-	This file.
+Mult.asm		-	multiplies RAM[0] times RAM[1]
+Fill.asm		-	colors the screen black when the keybourd is pressed
+Sort.asm		-	Sorts the a bus of memory by decending order
+Divide.asm		-	the floor of RAM[13] by RAM[14]
+
+Remarks
+-------
+* To implement the multiplacation and devision methods we used 
+the shift and add algorithm that works in time complexity of O(log(n)).
+* To multiply we used the shiftLeft to multply the first number 
+by 2 each time until 2^n > second number.then add the first 
+number until 2^(n-1) + k = second number.
+* To devide we multplied the second number the same way until the 
+product > first number. The quotient is the number of times we 
+multiplied the second number.
