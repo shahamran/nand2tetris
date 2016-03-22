@@ -26,7 +26,8 @@
 	@BLACK
 	D; JNE
 	// Else, continue to WHITE
-	
+
+// Loop to paint the whole screen white	
 (WHITE)
 	@SCREEN_SIZE
 	D=M
@@ -38,7 +39,7 @@
 	@CHECK
 	D; JGE
 	
-	// SCREEN[i] = 0
+	// SCREEN[i] = 0 == WHITE_PIXELS
 	@i
 	D=M
 	@SCREEN
@@ -51,7 +52,8 @@
 	// Loop
 	@WHITE
 	0; JMP
-	
+
+// Loop to paint it black	
 (BLACK)
 	@SCREEN_SIZE
 	D=M
@@ -63,7 +65,7 @@
 	@CHECK
 	D; JGE
 	
-	// SCREEN[i]=-1
+	// SCREEN[i]=-1 == BLACK_PIXELS
 	@i
 	D=M
 	@SCREEN
@@ -76,5 +78,3 @@
 	// Loop
 	@BLACK
 	0; JMP
-
-		

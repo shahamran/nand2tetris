@@ -7,12 +7,15 @@
 	@i
 	M=0
 	// Check if swapped. if not, end execution
+	// Happens at most n times, where n==RAM[15]
 	@swapped
 	D=M
 	@END
 	D; JEQ
 	@swapped
 	M=0
+// Check if every two following numbers are in the correct order.
+// If not, swap them.
 (SUB_LOOP)
 	@R15
 	D=M // D = n
@@ -54,7 +57,7 @@
 	@SUB_LOOP
 	D; JLE
 		
-	// SWAP
+	// SWAP: b,a = a,b
 	@swapped
 	M=1
 	

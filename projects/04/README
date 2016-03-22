@@ -26,3 +26,4 @@ number until 2^(n-1) + k = second number.
 * To devide we multplied the second number the same way until the 
 product > first number. The quotient is the number of times we 
 multiplied the second number.
+* Sorting was made using Bubble sort.
