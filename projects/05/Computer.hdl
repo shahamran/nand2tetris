@@ -19,5 +19,9 @@ CHIP Computer {
     IN reset;
 
     PARTS:
-    // Put your code here:
+    	// Exactly as shown in class: Unit 5.4, 25'40''
+    	CPU(inM=memout, instruction=romout, reset=reset, writeM=writeM,
+	    outM=outM, addressM=addressM, pc=pc);
+	ROM32K(address=pc, out=romout);
+	Memory(in=outM, address=addressM, load=writeM, out=memout);
 }

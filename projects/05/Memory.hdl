@@ -27,5 +27,22 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    	// The two MSBs determine which memory block to load to
+    	DMux4Way(in=true, sel=address[13..14], a=ramload1, b=ramload2
+					     , c=screenload1, d=ignore);
+	Or(a=ramload1, b=ramload2, out=ramload3);
+
+	// We only want to load a memory block if it is the chosen one by
+	// the MSBs and load input == 1
+    	And(a=load, b=ramload3, out=ramload);
+    	RAM16K(in=in, address=address[0..13], load=ramload, out=ramout);
+
+	And(a=load, b=screenload1, out=screenload); 
+	Screen(in=in, address=address[0..12], load=screenload, out=screenout);
+
+	Keyboard(out=kbdout);
+
+	// The MSBs also determine from which memory block to output
+	Mux4Way16(a=ramout, b=ramout, c=screenout, d=kbdout,
+		  sel=address[13..14], out=out);
 }

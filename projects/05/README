@@ -1,0 +1,23 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@mail.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                           Project 5 - Computer Architecture
+                           ---------------------------------
+  
+
+Submitted Files
+---------------
+README		- This file.
+CPU.hdl		- Our implementation of the CPU.
+ExtendAlu.hdl	- ALU with multiplication and shifts.
+CpuMul.hdl	- CPU that uses the ExtendAlu.
+Memory.hdl	- Encapsulates 16K RAM, screen memory and keyboard register.
+Computer.hdl	- Combines CPU, Memory and ROM to a working computer!
+
+Remarks
+-------
+* Our implementation followed the instructions given in the lectures, which
+  were simple and bold.

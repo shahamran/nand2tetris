@@ -1,0 +1,80 @@
+/**
+* This chip is an extension of the book CPU by using the extended ALU.
+* More specificly if instruction[15]==0 or (instruction[14] and instruction[13] equals 1)
+* the CpuMul behave exactly as the book CPU.
+* While if it is C instruction and instruction[13] == 0 the output will be D*A/M 
+* (according to instruction[12]).
+* Moreover, if it is c instruction and instruction[14] == 0 it will behave as follows:
+*
+* instruction:  | 12 | 11 | 10 |
+* _____________________________
+* shift left D  | 0  | 1  | 1  |
+* shift left A  | 0  | 1  | 0  |
+* shift left M  | 1  | 1  | 0  |
+* shift right D | 0  | 0  | 1  |
+* shift right A | 0  | 0  | 0  |
+* shift right M | 1  | 0  | 0  |
+**/
+
+CHIP CpuMul{
+
+    IN  inM[16],         // M value input  (M = contents of RAM[A])
+        instruction[16], // Instruction for execution
+        reset;           // Signals whether to re-start the current
+                         // program (reset=1) or continue executing
+                         // the current program (reset=0).
+
+    OUT outM[16],        // M value output
+        writeM,          // Write into M? 
+        addressM[15],    // Address in data memory (of M)
+        pc[15];          // address of next instruction
+
+     PARTS:
+	// The same as CPU except for the ALU part, which is more intuitive.
+
+    	// C-Instruction decoding
+    	And16(a=instruction, b=true,  out[15]=opcode, out[12]=ca,
+	      out[5]=writeA, out[4]=writeD, out[3]=writeM1, 
+	      out[2]=j1, out[1] =j2, out[0] =j3);
+       
+	// writeM is true iff it is a C-instruction and d3==1
+        And(a=writeM1, b=opcode, out=writeM);
+
+    	// A Register logic
+    	Mux16(a=instruction, b=aluout, sel=opcode, out=aregin);
+	Not(in=opcode, out=negopcode);
+	// Load address to ARegister if it is an A-Instruction or d1==1
+	Or(a=negopcode, b=writeA, out=aload);
+	ARegister(in=aregin, load=aload, out=aregout, out[0..14]=addressM);
+
+	// D Register logic - similar to A Register
+	And(a=writeD, b=opcode, out=dload);
+    	DRegister(in=aluout, load=dload, out=dregout);
+
+	// ALU logic
+	// The a-bit in the C-Instruction determines whether to handle
+	// A value or M value. This bit is extracted in the C-Instruction
+	// decoding at the beginning of the chip
+	Mux16(a=aregout, b=inM, sel=ca, out=aorm);
+	ExtendAlu(x=dregout, y=aorm, instruction=instruction[6..14], 
+		  zr=zr, ng=ng, out=aluout, out=outM);
+
+	// PC logic
+	Not(in=ng, out=nng);
+	Not(in=zr, out=nzr);
+	And(a=nng, b=nzr, out=pt);
+
+	And(a=j3, b=pt, out=jgt);
+	And(a=j1, b=ng, out=jlt);
+	And(a=j2, b=zr, out=jeq);
+	And(a=j1, b=j2, out=tmp);
+	And(a=tmp, b=j3, out=jmp);
+	// This covers every jump condition (e.g jge is satisfied by jgt or
+	// jeq)
+	Or8Way(in[0]=jmp, in[1]=jgt, in[2]=jlt, in[3]=jeq, in[4..7]=false,
+	       out=pcload1);
+	And(a=pcload1, b=opcode, out=pcload);
+
+	PC(in=aregout, load=pcload, inc=true,
+       	   reset=reset, out[0..14]=pc);
+}
