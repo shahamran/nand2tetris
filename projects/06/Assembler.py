@@ -1,7 +1,10 @@
 import Parser,Code,Command,sys,os
 from SymbolsTable import SymbolsTable
-
+""" The assembler main file.
+"""
 def parse_asm_file(file_name):
+    """ Some description
+    """
     line = 0
     symbols_table = SymbolsTable()
     hack_lines = []
@@ -28,6 +31,8 @@ def parse_asm_file(file_name):
             hack_file.write('%s\n' % line)
 
 def main():
+    """ ...
+    """
     file_name = sys.argv[1]
 
     if os.path.isfile(file_name):
