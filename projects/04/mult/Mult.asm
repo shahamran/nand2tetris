@@ -9,65 +9,36 @@
 	// Initalize the result to 0
 	@R2
 	M=0
-	// If R1==0 or R2 == 0, goto END
-	@R1
-	D=M
-	@END
-	D; JEQ
-	@R2
-	D=M
-	@END
-	D; JEQ
-	
-// Initialize variables: i = 1, R2 = R0
-(START)
-	@i
-	M=1
+	// If R0==0: goto END (0*X=0 for all X)
 	@R0
 	D=M
-	@R2
-	M=D
+	@END
+	D; JEQ
 
-// Multiply R2 by 2 log_2(R1) times
-(SHIFT)
-	@R1
-	D=M
+// For i = 0 to R1: result += R0 (where result is R2)
+	// Initialize: i = 0
 	@i
-	D=M-D
-	@ADD
-	D; JGT
-	
-	@i
-	M=M<<
-	@R2
-	M=M<<
-	@SHIFT
-	0; JMP
-
-// Add R0 to R2 R1-floor{log_2(R1)} times
-(ADD)
-	@i
-	M=M>>
-	@R2
-	M=M>>
+	M=0
 (LOOP)
-	@R1
-	D=M
 	@i
+	D=M
+	// if i >= R1: goto END
+	@R1
 	D=M-D
 	@END
-	D; JGE
-	
-	@i
-	M=M+1
+	D; JLE
+	// R2 = R2 + R0
 	@R0
 	D=M
 	@R2
 	M=M+D
-	
+	// ++i
+	@i
+	M=M+1
+	// End for (back to LOOP)
 	@LOOP
 	0; JMP
-	
+
 // Busy waiting
 (END)
 	@END
