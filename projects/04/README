@@ -18,12 +18,16 @@ Divide.asm		-	the floor of RAM[13] by RAM[14]
 
 Remarks
 -------
-* To implement the multiplacation and devision methods we used 
-the shift and add algorithm that works in time complexity of O(log(n)).
-* To multiply we used the shiftLeft to multply the first number 
-by 2 each time until 2^n > second number.then add the first 
-number until 2^(n-1) + k = second number.
+* To implement the devision methods we used the shift and add algorithm that works in
+  time complexity of O(log(n)).
+
+* NOTE that we fixed the multiplication to a naive algorithm, which adds in a loop.
+
+* (NOT ANYMORE) To multiply we used the shiftLeft to multply the first number 
+  by 2 each time until 2^n > second number.then add the first 
+  number until 2^(n-1) + k = second number.
+
 * To devide we multplied the second number the same way until the 
-product > first number. The quotient is the number of times we 
-multiplied the second number.
+  product > first number. The quotient is the number of times we 
+  multiplied the second number.
 * Sorting was made using Bubble sort.

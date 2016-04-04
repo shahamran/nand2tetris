@@ -1,5 +1,5 @@
 // Divides R13 by R14 and stores the result in R15.
-// Uses the same logic as Mult.asm
+// Uses the shift and add algorithm.
 
 	// Initalize result
 	@R15
