@@ -12,22 +12,16 @@ Submitted Files
 ---------------
 README		- This file.
 Makefile	- An empty file. no need to compile in Python
-Assembler	- Runs the python script with the given the asm file name as
-		  an argument
+Assembler	- Runs the python script with the given the file name as an argument
 Assembler.py	- The main program
 Code.py		- Translate the Commands from assembly to machine code
 Command.py	- A class represanting a command line
 Parser.py	- Parses the given file to commands list
 SymbolTable.py	- Manages all the variables and labels in the assembly code 
 
-Run command
------------
-
-Assembler <file_name>
 
 Remarks
 -------
 * Our implementation followed the design given in the lectures
-* We Implement the symbol table using the dictionary data stucture in order 
-  to add and get variables and labels in an efficient way.
-
+* We Implement the symbol table with the dictionary data stucture for afficiet
+  
