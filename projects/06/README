@@ -12,8 +12,8 @@ Submitted Files
 ---------------
 README		- This file.
 Makefile	- An empty file. no need to compile in Python
-Assembler	- Runs the python script with the given the asm file name as
-		  an argument
+Assembler	- A shell script that runs the python script with the given the 
+		  asm file name (or folder) as an argument
 Assembler.py	- The main program
 Code.py		- Translate the Commands from assembly to machine code
 Command.py	- A class represanting a command line
@@ -23,7 +23,7 @@ SymbolTable.py	- Manages all the variables and labels in the assembly code
 Run command
 -----------
 
-Assembler <file_name>
+./Assembler <file_name>
 
 Remarks
 -------

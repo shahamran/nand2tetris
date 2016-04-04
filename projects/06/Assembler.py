@@ -1,5 +1,14 @@
-import Parser,Code,Command,sys,os
+import Parser,Code,sys,os
 from SymbolsTable import SymbolsTable
+from Command import Command
+
+# Constants:
+HACK_SUFF = ".hack"
+ASM_SUFF = ".asm"
+W_FILE_MODE = "w"
+DEF_ENCODING = "utf-8"
+ASM_SUFF_LEN = len(ASM_SUFF)
+
 """ The assembler main file.
 """
 def parse_asm_file(file_name):
@@ -16,24 +25,24 @@ def parse_asm_file(file_name):
     Parser.parse(file_name)
     # First pass
     for command in Parser.get_commands():
-        if command.type == 'L':
+        if command.type == Command.L_COMMAND:
             symbols_table.add_label(command.content, line)
         else:
             line += 1
     # Second pass
     for command in Parser.get_commands():
-        if command.type == 'A':
+        if command.type == Command.A_COMMAND:
             if not str(command.content).isnumeric():
                 if not symbols_table.contains(command.content):
                     # a new variable
                     symbols_table.add_variable(command.content)
                 command.content = symbols_table.get_address(command.content)
-        elif command.type == 'L':
+        elif command.type == Command.L_COMMAND:
             continue
         hack_lines.append(Code.code(command))
 
     #writes the hack file
-    with open(file_name[:-4] + '.hack', mode='w', encoding='utf-8') as hack_file:
+    with open(file_name[:-ASM_SUFF_LEN] + HACK_SUFF, mode=W_FILE_MODE, encoding=DEF_ENCODING) as hack_file:
         for line in hack_lines:
             hack_file.write('%s\n' % line)
 
@@ -47,7 +56,7 @@ def main():
     elif os.path.isdir(file_name):
         os.chdir(file_name)
         for f in os.listdir():
-            if f.endswith('.asm'):
+            if f.endswith(ASM_SUFF):
                 parse_asm_file(f)
         os.chdir('..')
 

@@ -1,5 +1,10 @@
 class Command:
     """This class represents an assembly command."""
+    
+    # Constants:
+    C_COMMAND = "C"
+    A_COMMAND = "A"
+    L_COMMAND = "L"
 
     # The type of the command - i.e. L for Label, A for Adrress, C for Command
     type = ''

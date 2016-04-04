@@ -1,7 +1,9 @@
 import os
 from Command import Command
+
 """ The parser module for the assembler.
 """
+
 # Constants.
 COMMENT_PREFIX = '//'
 READ_ONLY = 'r'
@@ -10,10 +12,6 @@ EMPTY_LINE = ''
 A_COMMAND_PREFIX = '@'
 L_COMMAND_PREFIX = '('
 content = []
-
-A_COMMAND_TYPE = 'A'
-C_COMMAND_TYPE = 'C'
-L_COMMAND_TYPE = 'L'
 
 def parse(file_name):
     """ Parse a given assembly language file.
@@ -34,11 +32,11 @@ def parse(file_name):
                 continue
             # Determine whether current line is A/L/C Command (L for Label)
             elif line.startswith(A_COMMAND_PREFIX):
-                current_command = Command(A_COMMAND_TYPE, line[1:])
+                current_command = Command(Command.A_COMMAND, line[1:])
             elif line.startswith(L_COMMAND_PREFIX):
-                current_command = Command(L_COMMAND_TYPE, line[1:-1])
+                current_command = Command(Command.L_COMMAND, line[1:-1])
             else:
-                current_command = Command(C_COMMAND_TYPE, line)
+                current_command = Command(Command.C_COMMAND, line)
             # Add the created command to the content list
             content.append(current_command)
         # For loop ends here.

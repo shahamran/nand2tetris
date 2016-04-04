@@ -2,18 +2,20 @@ import re
 from Command import Command
 """The translates the assembler commands to machine code commands
 """
-#the
+# the regex that parses a c-command to its components
 C_REGEX = '(?:(^[AMD]{1,3})=)?(?:([^;]+))(?:;(J\w{2}))?'
+
 def code(command):
     """gets an assembler command and translates and returns it as machine code
        Input: command - the command to be translates
     """
-    if command.type == 'C':
+    if command.type == Command.C_COMMAND:
         # matches the C command to the dest comp and jmp parts by groups
         match = re.match(C_REGEX, command.content)
         dest = match.group(1)
         comp = match.group(2)
         jmp  = match.group(3)
+        # Convert None to empty string
         if not jmp:
             jmp = ''
         if not dest:
@@ -23,7 +25,7 @@ def code(command):
         comp = parse_comp(comp)
         jmp  = parse_jmp(jmp)
         return '1' + comp + dest + jmp
-    elif command.type == 'A':
+    elif command.type == Command.A_COMMAND:
         address = dec_to_binary(int(command.content))
         return '0' * (16 - len(address)) + address
 
