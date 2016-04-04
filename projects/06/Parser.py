@@ -2,7 +2,7 @@ import os
 from Command import Command
 """ The parser module for the assembler.
 """
-# Some constants.
+# Constants.
 COMMENT_PREFIX = '//'
 READ_ONLY = 'r'
 DEF_ENCODING = 'utf-8'

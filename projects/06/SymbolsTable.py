@@ -4,7 +4,7 @@ class SymbolsTable:
 	var_num = 16
 
 	def __init__(self):
-        """ Constructor for the symbols table object.
+    	""" Constructor for the symbols table object.
         Adds all predefined symbols upon creation.
         """
 		for i in range(16):
@@ -18,7 +18,7 @@ class SymbolsTable:
 		self.symbols['KBD'] = 24576
 	
 	def add_variable(self, var_str):
-        """ Adds a variable to the symbols table and assigns an address for it, starting from 16.
+    """ Adds a variable to the symbols table and assigns an address for it, starting from 16.
         """
 		self.symbols[var_str] = self.var_num
 		self.var_num += 1

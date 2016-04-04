@@ -3,7 +3,12 @@ from SymbolsTable import SymbolsTable
 """ The assembler main file.
 """
 def parse_asm_file(file_name):
-    """ Some description
+    """ Gets the commands list using the parser and scans it twice
+        first time searching for labels, second time uses the code to translate
+        the A and C commands to machine code.
+        Adds the machine code to a new .hack file
+        Input: file_name - the .asm file needed to be translated
+        Output: the translated file_name.hack file
     """
     line = 0
     symbols_table = SymbolsTable()
@@ -20,18 +25,20 @@ def parse_asm_file(file_name):
         if command.type == 'A':
             if not str(command.content).isnumeric():
                 if not symbols_table.contains(command.content):
+                    # a new variable
                     symbols_table.add_variable(command.content)
                 command.content = symbols_table.get_address(command.content)
         elif command.type == 'L':
             continue
         hack_lines.append(Code.code(command))
 
+    #writes the hack file
     with open(file_name[:-4] + '.hack', mode='w', encoding='utf-8') as hack_file:
         for line in hack_lines:
             hack_file.write('%s\n' % line)
 
 def main():
-    """ ...
+    """ runs the assembler on the given argument (Assembler.py <file_name>)
     """
     file_name = sys.argv[1]
 

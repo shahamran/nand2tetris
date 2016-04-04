@@ -1,9 +1,16 @@
 import re
 from Command import Command
-
+"""The translates the assembler commands to machine code commands
+"""
+#the
+C_REGEX = '(?:(^[AMD]{1,3})=)?(?:([^;]+))(?:;(J\w{2}))?'
 def code(command):
+    """gets an assembler command and translates and returns it as machine code
+       Input: command - the command to be translates
+    """
     if command.type == 'C':
-        match = re.match('(?:(^[AMD]{1,3})=)?(?:([^;]+))(?:;(J\w{2}))?', command.content)
+        # matches the C command to the dest comp and jmp parts by groups
+        match = re.match(C_REGEX, command.content)
         dest = match.group(1)
         comp = match.group(2)
         jmp  = match.group(3)
@@ -21,6 +28,10 @@ def code(command):
         return '0' * (16 - len(address)) + address
 
 def parse_dest(dest_str):
+    """parses the dest part of the C command to machine code
+       Input: dest_str - the dest in assembler
+       Output: A string representing dest in machine code
+    """
     result = 0
     if 'A' in dest_str:
         result = result | 4
@@ -32,6 +43,10 @@ def parse_dest(dest_str):
     return '0' * (3-len(result)) + result
 
 def parse_comp(comp_str):
+    """parses the comp part of the C command to machine code
+       Input: comp_str - the comp part in assembler
+       Output: A string representing dest in machine code
+    """
     comp_str = comp_str.strip()
     if comp_str == '0':
         return '110' + ('10' * 3)
@@ -108,19 +123,30 @@ def parse_comp(comp_str):
 
 
 def parse_jmp(jmp_str):
+    """parses the jmp part of the C command to machine code
+       Input: jmp_str - the jmp in assembler
+       Ouetput: A string representing jmp in machine code
+     """
     result = 0
+    # JGE or JGT
     if 'G' in jmp_str:
         result = result | 1
+    # JLE or JLT
     if 'L' in jmp_str:
         result = result | 4
+    # JLE ot JGE
     if 'E' in jmp_str and 'N' not in jmp_str:
         result = result | 2
+    # JNE
     elif 'NE' in jmp_str:
         result = 5
+    # unconditional jump
     if jmp_str == 'JMP':
         result = 7
     result = dec_to_binary(result)
     return '0' * (3-len(result)) + result
 
 def dec_to_binary(dec):
+    """recieves a number in decimal representation and changes it to it binary representation
+    """
     return str(bin(dec)[2:])
