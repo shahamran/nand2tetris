@@ -27,6 +27,7 @@ def parse(file_name):
             found_comment = line.find(COMMENT_PREFIX)
             if found_comment != -1:
                 line = line[:found_comment]
+
             line = line.replace(" ", "").strip()
             if line.isspace() or line == EMPTY_LINE:
                 continue
@@ -37,9 +38,12 @@ def parse(file_name):
                 current_command = Command(Command.L_COMMAND, line[1:-1])
             else:
                 current_command = Command(Command.C_COMMAND, line)
+
             # Add the created command to the content list
             content.append(current_command)
+
         # For loop ends here.
+
     # File is closed here
 
 def get_commands():

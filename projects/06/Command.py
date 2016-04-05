@@ -15,8 +15,8 @@ class Command:
 
     def __init__(self, type, content):
         """ Basic Constructor, Initializes the command variables
-            Input type - the type of the command (L,A or C)
-                  content - the command content
+        Input type - the type of the command (L,A or C)
+           content - the command content
         """
         self.type = type
         self.content = content

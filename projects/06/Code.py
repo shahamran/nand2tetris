@@ -18,8 +18,10 @@ def code(command):
         # Convert None to empty string
         if not jmp:
             jmp = ''
+
         if not dest:
             dest = ''
+
         dest = dest.strip(); jmp = jmp.strip(); comp = comp.strip()
         dest = parse_dest(dest)
         comp = parse_comp(comp)
@@ -37,10 +39,13 @@ def parse_dest(dest_str):
     result = 0
     if 'A' in dest_str:
         result = result | 4
+
     if 'D' in dest_str:
         result = result | 2
+
     if 'M' in dest_str:
         result = result | 1
+
     result = dec_to_binary(result)
     return '0' * (3-len(result)) + result
 
@@ -133,18 +138,23 @@ def parse_jmp(jmp_str):
     # JGE or JGT
     if 'G' in jmp_str:
         result = result | 1
+
     # JLE or JLT
     if 'L' in jmp_str:
         result = result | 4
+
     # JLE ot JGE
     if 'E' in jmp_str and 'N' not in jmp_str:
         result = result | 2
+
     # JNE
     elif 'NE' in jmp_str:
         result = 5
+
     # unconditional jump
     if jmp_str == 'JMP':
         result = 7
+
     result = dec_to_binary(result)
     return '0' * (3-len(result)) + result
 

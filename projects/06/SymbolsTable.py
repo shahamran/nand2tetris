@@ -34,6 +34,6 @@ class SymbolsTable:
         return symbol in self.symbols
 
     def get_address(self, symbol):
-       """ Returns the address of a given symbol if it exists in the table, None otherwise.
-       """
-       return self.symbols[symbol]
+        """ Returns the address of a given symbol if it exists in the table, None otherwise.
+        """
+        return self.symbols[symbol]
