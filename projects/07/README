@@ -15,7 +15,7 @@ Makefile	- An empty file. no need to compile in Python
 VMtranslator- A shell script that runs the python script with the given the 
     		  asm file name (or folder) as an argument
 VMtranslator.py	- The main program
-codeWriter.py- Translate the Commands from VM to assembly
+CodeWriter.py- Translate the Commands from VM to assembly
 Command.py	- A class represanting a command line
 Parser.py	- Parses the given file to commands list
 
