@@ -1,0 +1,30 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@mail.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                   Project 7- Virtual Machine I - Stack Arithmetic
+                           -------------------------
+
+
+Submitted Files
+---------------
+README		- This file.
+Makefile	- An empty file. no need to compile in Python
+VMtranslator- A shell script that runs the python script with the given the 
+    		  asm file name (or folder) as an argument
+VMtranslator.py	- The main program
+codeWriter.py- Translate the Commands from VM to assembly
+Command.py	- A class represanting a command line
+Parser.py	- Parses the given file to commands list
+
+Run command
+-----------
+
+./VMtranslator <file_name>
+
+Remarks
+-------
+* Our implementation followed the design given in the lectures
+* "It's a trap"
