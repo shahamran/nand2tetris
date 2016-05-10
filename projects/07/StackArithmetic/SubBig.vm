@@ -5,3 +5,7 @@ sub
 push constant 1
 neg
 add
+push constant 30000
+neg
+push constant 3000
+gt
