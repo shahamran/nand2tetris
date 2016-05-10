@@ -30,14 +30,14 @@ def main():
     """ runs the assembler on the given argument (Assembler.py <file_name>)
     """
     file_name = sys.argv[1]
-
     if os.path.isfile(file_name):
         CodeWriter.set_asm_file(file_name[:-len(VM_SUFF)] + ASM_SUFF)
         parse_vm_file(file_name)
     elif os.path.isdir(file_name):
         if file_name.endswith('/'):
             file_name = file_name[:-1]
-        CodeWriter.set_asm_file(os.path.abspath(file_name) + ASM_SUFF)
+        dir_name = file_name.split("/")[-1]
+        CodeWriter.set_asm_file(os.path.abspath(file_name) + "/" + dir_name + ASM_SUFF)
         os.chdir(file_name)
         for f in os.listdir():
             if f.endswith(VM_SUFF):
