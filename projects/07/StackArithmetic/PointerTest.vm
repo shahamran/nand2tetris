@@ -1,0 +1,9 @@
+// set address 503 to 34
+push constant 3
+pop static 11
+push constant 500
+push static 11
+add
+pop pointer 1
+push constant 34
+pop that 0

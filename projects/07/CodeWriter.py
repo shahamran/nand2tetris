@@ -54,7 +54,7 @@ def set_vm_file(filename):
             asm_file.write('%s\n' % command)
     static_counter = 0
     content = []
-    vm_file = filename
+    vm_file = filename.split('/')[-1]
 
 
 def write_unary_op():
@@ -113,6 +113,7 @@ def write_arithmetic(command):
         content.append('M=!M')
 
 def write_push_pop(push_pop, segment, index):
+    index = int(index)
     global content
     static_name = vm_file[:-len(VM_SUFF)]
     if push_pop == Parser.CommandType.C_PUSH:
@@ -183,10 +184,8 @@ def write_push_pop(push_pop, segment, index):
             content.append('@R' + str(3 + index))
             content.append('D=A')
         elif segment == SEG_TEMP:
-            content.append('@TEMP')
+            content.append('@R' + str(5 + index))
             content.append('D=A')
-            content.append('@' + str(index))
-            content.append('D=D+A')
         elif segment == SEG_STATIC:
             content.append('@' + static_name + '.' + str(index))
             content.append('D=A')
