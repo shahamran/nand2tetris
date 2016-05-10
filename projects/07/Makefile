@@ -1,0 +1,2 @@
+# --- Empty Makefile ---
+all: ;
