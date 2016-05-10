@@ -147,10 +147,7 @@ def write_push_pop(push_pop, segment, index):
             content.append('@R' + str(3 + index))
             content.append('D=M')
         elif segment == SEG_TEMP:
-            content.append('@TEMP')
-            content.append('D=A')
-            content.append('@' + str(5 + index))
-            content.append('A=D+A')
+            content.append('@R' + str(5 + index))
             content.append('D=M')
         elif segment == SEG_STATIC:
             content.append('@' + static_name + '.' + str(index))
