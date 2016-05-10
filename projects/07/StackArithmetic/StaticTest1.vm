@@ -1,0 +1,8 @@
+push constant 2047
+neg
+pop static 42
+push constant 4095
+pop static 21
+push static 42
+push static 21
+gt

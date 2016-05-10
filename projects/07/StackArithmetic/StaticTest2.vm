@@ -1,0 +1,7 @@
+push constant 42
+pop static 21
+push constant 84
+pop static 100
+push static 100
+push static 21
+or

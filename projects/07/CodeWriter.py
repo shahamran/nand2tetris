@@ -9,6 +9,8 @@ INIT_STR = '@END\n0;JMP\n(WRITE_EQ)\n@R15\nM=D\n@SP\nAM=M-1\nD=M\nA=A-1\nD=M-D\n
     '@R15\nA=M\n0;JMP\n(WRITE_LT)\n@R15\nM=D\n@SP\nAM=M-1\nD=M\nA=A-1\nD=M-D\nM=0\n@END_LT\nD;JGE\n@SP\nA=M-1\nM=-1\n' + \
     '(END_LT)\n@R15\nA=M\n0;JMP\n(END)\n@END\n0;JMP\n'
 
+VM_SUFF = ".vm"
+
 SEG_CONSTANT = 'constant'
 SEG_ARGUMENT = 'argument'
 SEG_LOCAL = 'local'
@@ -44,14 +46,14 @@ def write_asm():
 
 
 def set_vm_file(filename):
+    global content
+    global static_counter
+    global vm_file
     with open(asm_file_name, mode='a', encoding=DEF_ENCODING) as asm_file:
         for command in content:
             asm_file.write('%s\n' % command)
-    global static_counter
     static_counter = 0
-    global content
     content = []
-    global vm_file
     vm_file = filename
 
 
@@ -112,6 +114,7 @@ def write_arithmetic(command):
 
 def write_push_pop(push_pop, segment, index):
     global content
+    static_name = vm_file[:-len(VM_SUFF)]
     if push_pop == Parser.CommandType.C_PUSH:
         if segment == SEG_CONSTANT:
             content.append('@' + str(index))
@@ -150,7 +153,7 @@ def write_push_pop(push_pop, segment, index):
             content.append('A=D+A')
             content.append('D=M')
         elif segment == SEG_STATIC:
-            content.append('@' + vm_file_name + '.' + str(index))
+            content.append('@' + static_name + '.' + str(index))
             content.append('D=M')
         content.append('@SP')
         content.append('A=M')
@@ -188,7 +191,7 @@ def write_push_pop(push_pop, segment, index):
             content.append('@' + str(index))
             content.append('D=D+A')
         elif segment == SEG_STATIC:
-            content.append('@' + vm_file_name + '.' + str(index))
+            content.append('@' + static_name + '.' + str(index))
             content.append('D=A')
         content.append('@R13')
         content.append('M=D')
