@@ -3,7 +3,7 @@ all: ;
 
 TAR_FILES=README Makefile VMtranslator VMtranslator.py CodeWriter.py Command.py Parser.py
 TAR_FLAGS=-cvf
-TAR_NAME=project7.tar
+TAR_NAME=project8.tar
 TAR=tar
 
 tar: 
