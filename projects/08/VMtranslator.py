@@ -17,6 +17,8 @@ def parse_vm_file(file_name):
         Input: file_name - the .vm file needed to be translated
         Output: the translated file_name.asm file
     """
+    clean_file_name = file_name.split('/')[-1]
+    func_name = ''
     Parser.parse(file_name)
     CodeWriter.set_vm_file(file_name)
     for command in Parser.get_commands():
@@ -25,6 +27,22 @@ def parse_vm_file(file_name):
         elif command.type == Parser.CommandType.C_PUSH or \
               command.type == Parser.CommandType.C_POP:
             CodeWriter.write_push_pop(command.type, command.content[1], command.content[2])
+        elif command.type == Parser.CommandType.C_LABEL:
+            CodeWriter.writeLabel(func_name + ':' + command.content[1])
+        elif command.type == Parser.CommandType.C_GOTO:
+            CodeWriter.writeGoto(func_name + ':' + command.content[1])
+        elif command.type == Parser.CommandType.C_IF:
+            CodeWriter.writeIf(func_name + ':' + command.content[1])
+        elif command.type == Parser.CommandType.C_CALL:
+            CodeWriter.writeCall(command.content[1], command.content[2])
+        elif command.type == Parser.CommandType.C_RETURN:
+            CodeWriter.writeReturn()
+        elif command.type == Parser.CommandType.C_FUNCTION:
+            func_name = command.content[1]
+            CodeWriter.writeFunction(func_name, command.content[2])
+
+        
+        
             
 def main():
     """ runs the assembler on the given argument (Assembler.py <file_name>)
@@ -39,6 +57,7 @@ def main():
         dir_name = file_name.split("/")[-1]
         CodeWriter.set_asm_file(os.path.abspath(file_name) + "/" + dir_name + ASM_SUFF)
         os.chdir(file_name)
+        CodeWriter.writeInit()
         for f in os.listdir():
             if f.endswith(VM_SUFF):
                 parse_vm_file(f)

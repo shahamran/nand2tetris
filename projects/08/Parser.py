@@ -67,7 +67,7 @@ def parse(file_name):
                 current_command = CommandType.C_LABEL
             elif line[0] == STR_GOTO:
                 current_command = CommandType.C_GOTO
-            elif line[0] == STR_IF:
+            elif line[0].startswith(STR_IF):
                 current_command = CommandType.C_IF
             elif line[0] == STR_FUNCTION:
                 current_command = CommandType.C_FUNCTION

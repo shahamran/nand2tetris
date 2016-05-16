@@ -198,21 +198,133 @@ def write_push_pop(push_pop, segment, index):
         content.append('A=M')
         content.append('M=D')
 
-def writeInit():
-
 def writeLabel(label):
-	content.append('(' + label + ')')
+    global content
+    content.append('(' + label + ')')
 
 def writeGoto(label):
-	content.append('@' + label)
+    global content
+    content.append('@' + label)
+    content.append('0;JMP')
 
 def writeIf(label):
+    global content
+    content.append('@SP')
+    content.append('AM=M-1')
+    content.append('D=M')
+    content.append('@' + label)
+    content.append('D;JNE')
+
+def writePush():
+    """ Increases the stack size by 1 and changes the current address
+    to the previous SP location
+    """
+    global content
+    content.append('@SP')
+    content.append('M=M+1')
+    content.append('A=M-1')
+
+def writePushSeg(seg):
+    global content
+    content.append('@' + seg)
+    content.append('D=M')
+    writePush()
+    content.append('M=D')
 
 def writeCall(funcName, numArgs):
+    global jmp_counter
+    global content
+    # push return address
+    content.append('@RET_ADDRESS' + str(jmp_counter))
+    content.append('D=A')
+    writePush()
+    content.append('M=D')
+    # push LCL
+    writePushSeg('LCL')
+    # push ARG
+    writePushSeg('ARG')
+    # push THIS
+    writePushSeg('THIS')
+    # push THAT
+    writePushSeg('THAT')
+    # ARG = SP-n-5
+    content.append('@' + str(numArgs))
+    content.append('D=A')
+    content.append('@5')
+    content.append('D=D+A')
+    content.append('@SP')
+    content.append('D=M-D')
+    content.append('@ARG')
+    content.append('M=D')
+    # LCL = SP
+    content.append('@SP')
+    content.append('D=M')
+    content.append('@LCL')
+    content.append('M=D')
+    # transfer control
+    writeGoto(funcName)
+    # return address
+    writeLabel('RET_ADDRESS' + str(jmp_counter))
+
+    jmp_counter += 1
+
+def writeSegFrame(seg, frame, num):
+    global content
+    content.append('@' + frame)
+    content.append('D=M')
+    content.append('@' + str(num))
+    content.append('A=D-A')
+    content.append('D=M')
+    content.append('@' + seg)
+    content.append('M=D')
 
 def writeReturn():
+    global content
+    FRAME = 'R14'
+    RET = 'R13'
+    # FRAME = LCL
+    content.append('@LCL')
+    content.append('D=M')
+    content.append('@' + FRAME)
+    content.append('M=D')
+    # RET=*(FRAME-5)
+    writeSegFrame(RET, FRAME, 5)
+    # *ARG=pop()
+    content.append('@SP')
+    content.append('AM=M-1')
+    content.append('D=M')
+    content.append('@ARG')
+    content.append('A=M')
+    content.append('M=D')
+    # SP=ARG+1
+    content.append('@ARG')
+    content.append('D=M+1')
+    content.append('@SP')
+    content.append('M=D')
+    # THAT=*(FRAME-1)
+    writeSegFrame('THAT', FRAME, 1)
+    # THIS=*(FRAME-2)
+    writeSegFrame('THIS', FRAME, 2)
+    # ARG=*(FRAME-3)
+    writeSegFrame('ARG', FRAME, 3)
+    # LCL=*(FRAME-4)
+    writeSegFrame('LCL', FRAME, 4)
+    # goto RET
+    content.append('@' + RET)
+    content.append('A=M')
+    content.append('0;JMP')
+        
 
 def writeFunction(funcName, numLocals):
+    global content
+    writeLabel(funcName)
+    for i in range(int(numLocals)):
+            writePush()
+            content.append('M=0')
 
+def writeInit():
+    global content
+    content = ['@256', 'D=A', '@SP', 'M=D']
+    writeCall('Sys.init', 0)
 
 
