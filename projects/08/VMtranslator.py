@@ -19,6 +19,7 @@ def parse_vm_file(file_name):
     """
     clean_file_name = file_name.split('/')[-1]
     func_name = ''
+    delim = ''
     Parser.parse(file_name)
     CodeWriter.set_vm_file(file_name)
     for command in Parser.get_commands():
@@ -28,17 +29,18 @@ def parse_vm_file(file_name):
               command.type == Parser.CommandType.C_POP:
             CodeWriter.write_push_pop(command.type, command.content[1], command.content[2])
         elif command.type == Parser.CommandType.C_LABEL:
-            CodeWriter.writeLabel(func_name + ':' + command.content[1])
+            CodeWriter.writeLabel(func_name + delim + command.content[1])
         elif command.type == Parser.CommandType.C_GOTO:
-            CodeWriter.writeGoto(func_name + ':' + command.content[1])
+            CodeWriter.writeGoto(func_name + delim + command.content[1])
         elif command.type == Parser.CommandType.C_IF:
-            CodeWriter.writeIf(func_name + ':' + command.content[1])
+            CodeWriter.writeIf(func_name + delim + command.content[1])
         elif command.type == Parser.CommandType.C_CALL:
             CodeWriter.writeCall(command.content[1], command.content[2])
         elif command.type == Parser.CommandType.C_RETURN:
             CodeWriter.writeReturn()
         elif command.type == Parser.CommandType.C_FUNCTION:
             func_name = command.content[1]
+            delim = ':'
             CodeWriter.writeFunction(func_name, command.content[2])
 
         
