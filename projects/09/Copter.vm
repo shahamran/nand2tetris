@@ -61,7 +61,7 @@ call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
-function Copter.doJump 0
+function Copter.jump 0
 push argument 0
 pop pointer 0
 push this 1

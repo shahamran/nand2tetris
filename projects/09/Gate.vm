@@ -57,7 +57,7 @@ push constant 0
 call Screen.setColor 1
 pop temp 0
 push pointer 0
-call Gate.drawGate 1
+call Gate.draw 1
 pop temp 0
 push this 3
 push this 4
