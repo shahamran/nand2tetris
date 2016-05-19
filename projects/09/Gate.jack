@@ -34,4 +34,16 @@ class Gate {
         }
         return false;
     }
+    
+    method int getHeight() {
+        return height;
+    }
+    
+    method int getPos() {
+        return pos;
+    }
+    
+    method int getGap() {
+        return gap;
+    }
 }
