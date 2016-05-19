@@ -75,7 +75,7 @@ class iCopter {
             return;
         }
 
-        gateInScreen = gate.move();
+        let gateInScreen = gate.move();
         if (~gateInScreen) {
             let speed = speed + speed;
             do gate.dispose();
