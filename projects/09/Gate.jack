@@ -18,8 +18,8 @@ class Gate {
     }
     
     method void draw() {
-        do Screen.drawRectangle(pos, 0, pos + width, height);
-        do Screen.drawRectangle(pos, ,height + gap, pos + width, 255);
+        do Screen.drawRectangle(pos, 0, (pos + width), height);
+        do Screen.drawRectangle(pos, (height + gap), (pos + width), 255);
         return;
     }
     
