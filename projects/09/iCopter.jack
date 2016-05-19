@@ -68,17 +68,17 @@ class iCopter {
     method void moveCopter() {
         var boolean gateInScreen, copterInScreen;
 
-        copter.move();
-        copterInScreen = copter.isInScreen();
+        do copter.move();
+        let copterInScreen = copter.isInScreen();
         if (~copterInScreen) {
-            gameOver = true;
+            let gameOver = true;
             return;
         }
 
         gateInScreen = gate.move();
         if (~gateInScreen) {
             let speed = speed + speed;
-            gate.dispose();
+            do gate.dispose();
             let gate = Gate.new(100, 30, 50, speed);
         }
 
