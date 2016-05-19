@@ -25,7 +25,7 @@ class Gate {
     
     method boolean move() {
          do Screen.setColor(false);
-         do drawGate();
+         do draw();
          if ((pos - speed) > 0) {
             do Screen.setColor(true);
             let pos = pos - speed;

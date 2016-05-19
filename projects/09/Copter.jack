@@ -47,7 +47,7 @@ class Copter {
     }
 
     /** Moves the copter up by 2 pixels. */
-    method void doJump() {
+    method void jump() {
         if (y > 1) {
             do Screen.setColor(false);
             do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);

@@ -1,0 +1,148 @@
+function iCopter.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push constant 0
+pop this 3
+push constant 3
+pop this 2
+push constant 20
+push constant 100
+push constant 10
+call Copter.new 3
+pop this 0
+push constant 100
+push constant 30
+push constant 50
+push this 2
+call Gate.new 4
+pop this 1
+push pointer 0
+return
+function iCopter.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call Copter.dispose 1
+pop temp 0
+push this 1
+call Gate.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function iCopter.run 1
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push this 3
+not
+not
+if-goto WHILE_END0
+label WHILE_EXP1
+push local 0
+push constant 0
+eq
+not
+if-goto WHILE_END1
+call Keyboard.keyPressed 0
+pop local 0
+push pointer 0
+call iCopter.moveCopter 1
+pop temp 0
+goto WHILE_EXP1
+label WHILE_END1
+push local 0
+push constant 81
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop this 3
+label IF_FALSE0
+push local 0
+push constant 32
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 0
+call Copter.jump 1
+pop temp 0
+label IF_FALSE1
+push local 0
+push constant 80
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+label IF_FALSE2
+label WHILE_EXP2
+push local 0
+push constant 0
+eq
+not
+not
+if-goto WHILE_END2
+call Keyboard.keyPressed 0
+pop local 0
+push pointer 0
+call iCopter.moveCopter 1
+pop temp 0
+goto WHILE_EXP2
+label WHILE_END2
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function iCopter.moveCopter 2
+push argument 0
+pop pointer 0
+push this 0
+call Copter.move 1
+pop temp 0
+push this 0
+call Copter.isInScreen 1
+pop local 1
+push local 1
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop this 3
+push constant 0
+return
+label IF_FALSE0
+push this 1
+call Gate.move 1
+pop local 0
+push local 0
+not
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 2
+push this 2
+add
+pop this 2
+push this 1
+call Gate.dispose 1
+pop temp 0
+push constant 100
+push constant 30
+push constant 50
+push this 2
+call Gate.new 4
+pop this 1
+label IF_FALSE1
+push constant 5
+call Sys.wait 1
+pop temp 0
+push constant 0
+return
