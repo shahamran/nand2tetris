@@ -8,7 +8,8 @@ class Gate {
         let gap = newGap;
         let speed = newSpeed;
         let pos = 511 - width;
-        do.drawGate();
+        do draw();
+        return this;
     }
     
     method void dispose() {
@@ -19,6 +20,7 @@ class Gate {
     method void draw() {
         do Screen.drawRectangle(pos, 0, pos + width, height);
         do Screen.drawRectangle(pos, ,height + gap, pos + width, 255);
+        return;
     }
     
     method boolean move() {
@@ -27,7 +29,7 @@ class Gate {
          if ((pos - speed) > 0) {
             do Screen.setColor(true);
             let pos = pos - speed;
-            do drawGate();
+            do draw();
             return true;
         }
         return false;
