@@ -1,0 +1,88 @@
+/**
+ * Implements the iCopter game.
+ * TODO
+ */
+class iCopter {
+
+    // The copter
+    field Copter copter;
+
+    // The obstacle
+    field Gate gate;
+
+    field int speed;
+
+    field boolean gameOver;
+
+    /** Constructs a new Copter Game. */
+    constructor iCopter new() {
+        let gameOver = false;
+        let speed = 3;
+        let copter = Copter.new(20, 100, 10);
+        let gate = Gate.new(100, 30, 50, speed);
+
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do copter.dispose();
+        do gate.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Starts the game. Handles inputs from the user that control
+     *  the copter's movement */
+    method void run() {
+        var char key;
+
+        while (~gameOver) {
+            // waits for a key to be pressed.
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+                do moveCopter();
+            }
+
+            if (key = 81) {             // 'q' key
+                let gameOver = true;
+            }
+            if (key = 32) {             // '<Space>' key
+                do copter.jump();
+            }
+            if (key = 80) {
+                // Pause
+            }
+
+            // waits for the key to be released.
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                do moveCopter();
+            }
+        }
+            
+        return;
+	}
+
+    /** Moves the 'copter' towards the gate (not really) */
+    method void moveCopter() {
+        var boolean gateInScreen, copterInScreen;
+
+        copter.move();
+        copterInScreen = copter.isInScreen();
+        if (~copterInScreen) {
+            gameOver = true;
+            return;
+        }
+
+        gateInScreen = gate.move();
+        if (~gateInScreen) {
+            let speed = speed + speed;
+            gate.dispose();
+            let gate = Gate.new(100, 30, 50, speed);
+        }
+
+        do Sys.wait(5); // Delays the next movement.
+        return;
+    }
+}
