@@ -10,14 +10,16 @@ class iCopter {
     // The obstacle
     field Gate gate;
 
-    field int speed;
-
     field boolean gameOver;
+
+    field int jumpCounter, highScore, speed;
 
     /** Constructs a new Copter Game. */
     constructor iCopter new() {
         let gameOver = false;
         let speed = 3;
+        let jumpCounter = 0;
+        let highScore = 0;
         let copter = Copter.new(20, 100, 10);
         let gate = Gate.new(100, 30, 50, speed);
 
@@ -30,6 +32,25 @@ class iCopter {
         do gate.dispose();
         do Memory.deAlloc(this);
         return;
+    }
+
+    method boolean checkClash() {
+        var int copX, copY, copSize, gatePos, gateHeight, gateGap;
+
+        let copX = copter.getX();
+        let copY = copter.getY();
+        let copSize = copter.getSize();
+        let gatePos = gate.getPos();
+        let gateHeight = gate.getHeight();
+        let gateGap = gate.getGap();
+
+        if (((copX + copSize) > gatePos) & (copX < gatePos)) {
+            if ((copY < gateHeight) | ((copY + copSize) > (gateHeight + gateGap))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** Starts the game. Handles inputs from the user that control
@@ -48,7 +69,7 @@ class iCopter {
                 let gameOver = true;
             }
             if (key = 32) {             // '<Space>' key
-                do copter.jump();
+                let jumpCounter = 10;
             }
             if (key = 80) {
                 // Pause
@@ -60,13 +81,36 @@ class iCopter {
                 do moveCopter();
             }
         }
-            
+
+        do Screen.clearScreen();
+        do Output.moveCursor(3, 10);
+        do Output.printString("Game Over!");
+        do Output.println();
+        do Output.printString("Your score is: ");
+        do Output.printInt(highScore);
+        do Output.printString("   !!!!!!!!");
+
         return;
 	}
 
     /** Moves the 'copter' towards the gate (not really) */
     method void moveCopter() {
         var boolean gateInScreen, copterInScreen;
+        var int newGateHeight;
+        
+        if (gameOver) {
+            return;
+        }
+
+        if (checkClash()) {
+            let gameOver = true;
+            return;
+        }
+
+        if (jumpCounter > 0) {
+            let jumpCounter = jumpCounter - 1;
+            do copter.setJump();
+        }
 
         do copter.move();
         let copterInScreen = copter.isInScreen();
@@ -77,12 +121,17 @@ class iCopter {
 
         let gateInScreen = gate.move();
         if (~gateInScreen) {
-            let speed = speed + speed;
+            let speed = speed + 1;
+            let newGateHeight = gate.getHeight() + 43 + gate.getGap();
+            if (newGateHeight > 255) {
+                let newGateHeight = newGateHeight - 256;
+            }
             do gate.dispose();
-            let gate = Gate.new(100, 30, 50, speed);
+            let gate = Gate.new(newGateHeight, 30, 50, speed);
+            let highScore = highScore + 1;
         }
 
-        do Sys.wait(5); // Delays the next movement.
+        do Sys.wait(15); // Delays the next movement.
         return;
     }
 }

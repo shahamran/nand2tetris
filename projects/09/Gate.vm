@@ -84,3 +84,18 @@ return
 label IF_FALSE0
 push constant 0
 return
+function Gate.getHeight 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Gate.getPos 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Gate.getGap 0
+push argument 0
+pop pointer 0
+push this 2
+return

@@ -1,5 +1,5 @@
 function Copter.new 0
-push constant 4
+push constant 5
 call Memory.alloc 1
 pop pointer 0
 push argument 0
@@ -11,6 +11,8 @@ pop this 2
 push constant 0
 not
 pop this 3
+push constant 0
+pop this 4
 push pointer 0
 call Copter.draw 1
 pop temp 0
@@ -61,11 +63,19 @@ call Screen.drawRectangle 4
 pop temp 0
 push constant 0
 return
+function Copter.setJump 0
+push argument 0
+pop pointer 0
+push constant 0
+not
+pop this 4
+push constant 0
+return
 function Copter.jump 0
 push argument 0
 pop pointer 0
 push this 1
-push constant 1
+push constant 6
 gt
 if-goto IF_TRUE0
 goto IF_FALSE0
@@ -75,10 +85,6 @@ call Screen.setColor 1
 pop temp 0
 push this 0
 push this 1
-push this 2
-add
-push constant 1
-sub
 push this 0
 push this 2
 add
@@ -88,7 +94,7 @@ add
 call Screen.drawRectangle 4
 pop temp 0
 push this 1
-push constant 2
+push constant 6
 sub
 pop this 1
 push constant 0
@@ -101,7 +107,7 @@ push this 0
 push this 2
 add
 push this 1
-push constant 1
+push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
@@ -115,14 +121,25 @@ return
 function Copter.move 0
 push argument 0
 pop pointer 0
+push this 4
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Copter.jump 1
+pop temp 0
+push constant 0
+pop this 4
+goto IF_END0
+label IF_FALSE0
 push this 1
 push this 2
 add
 push constant 254
 lt
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
 push constant 0
 call Screen.setColor 1
 pop temp 0
@@ -158,10 +175,11 @@ push this 2
 add
 call Screen.drawRectangle 4
 pop temp 0
-goto IF_END0
-label IF_FALSE0
+goto IF_END1
+label IF_FALSE1
 push constant 0
 pop this 3
+label IF_END1
 label IF_END0
 push constant 0
 return
@@ -174,6 +192,11 @@ function Copter.getY 0
 push argument 0
 pop pointer 0
 push this 1
+return
+function Copter.getSize 0
+push argument 0
+pop pointer 0
+push this 2
 return
 function Copter.isInScreen 0
 push argument 0
