@@ -2,10 +2,11 @@ class Gate {
     field int height, width, gap, pos, speed;
     
     
-    constructor Gate new(int newHeight, int newWidth, int newGap){
+    constructor Gate new(int newHeight, int newWidth, int newGap, int newSpeed){
         let height = newHeight;
         let width = newWidth;
         let gap = newGap;
+        let speed = newSpeed;
         let pos = 511 - width;
         do.drawGate();
     }
@@ -15,7 +16,7 @@ class Gate {
         return;
     }
     
-    method void drawGate() {
+    method void draw() {
         do Screen.drawRectangle(pos, 0, pos + width, height);
         do Screen.drawRectangle(pos, ,height + gap, pos + width, 255);
     }
