@@ -10,9 +10,11 @@ class iCopter {
     // The obstacle
     field Gate gate;
 
+    // GameOver (yes/no)
     field boolean gameOver;
 
-    field int jumpCounter, highScore, speed;
+    // jumpCountdown, highScores, speed, gateHeight
+    field int jumpCounter, highScore, speed, newGateHeight;
 
     /** Constructs a new Copter Game. */
     constructor iCopter new() {
@@ -20,6 +22,7 @@ class iCopter {
         let speed = 3;
         let jumpCounter = 0;
         let highScore = 0;
+	let newGateHeight = 0;
         let copter = Copter.new(20, 100, 10);
         let gate = Gate.new(100, 30, 50, speed);
 
@@ -60,8 +63,9 @@ class iCopter {
 
         while (~gameOver) {
             // waits for a key to be pressed.
-            while (key = 0) {
+            while ((key = 0) & ~gameOver) {
                 let key = Keyboard.keyPressed();
+		do updateGateHeight();
                 do moveCopter();
             }
 
@@ -93,10 +97,17 @@ class iCopter {
         return;
 	}
 
+    method void updateGateHeight() {
+	let newGateHeight = newGateHeight + 11;
+	if ((newGateHeight + gate.getGap()) > 255) {
+	    let newGateHeight = newGateHeight - (255 - gate.getGap());
+	}
+	return;
+    }
+
     /** Moves the 'copter' towards the gate (not really) */
     method void moveCopter() {
         var boolean gateInScreen, copterInScreen;
-        var int newGateHeight;
         
         if (gameOver) {
             return;
@@ -122,10 +133,6 @@ class iCopter {
         let gateInScreen = gate.move();
         if (~gateInScreen) {
             let speed = speed + 1;
-            let newGateHeight = gate.getHeight() + 43 + gate.getGap();
-            if (newGateHeight > 255) {
-                let newGateHeight = newGateHeight - 256;
-            }
             do gate.dispose();
             let gate = Gate.new(newGateHeight, 30, 50, speed);
             let highScore = highScore + 1;

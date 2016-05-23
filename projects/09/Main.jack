@@ -14,6 +14,7 @@ class Main {
 
         let game = iCopter.new();
         do game.run();
+	do Sys.wait(10);
         do game.dispose();
 
         return;
