@@ -4,23 +4,35 @@ import pdb
 OPS = ['+', '-', '*', '/', '&', '|', '<', '>', '=']
 UN_OPS = ['-', '~']
 
+
 def indent(depth):
+    """
+    Get the correct indentation for the given depth
+    """
     return DELIM * 2 * depth
 
+
 class CompilationEngine:
+    """
+    Prints a valid xml file from a given Jack code.
+    """
     # Variables
     output = []
     tokenizer = None
     depth = 0
-    
 
     def __init__(self, in_file):
+        # Set the tokenizer with the input file
         self.tokenizer = JackTokenizer(in_file)
-        
+        # Go to the first line (token), and write the class XML
         self.tokenizer.advance()
         self.print_block('class', self.compile_class)
 
     def print_tokens(self, count = 1):
+        """
+        Print (add to output) the current token with correct indentation.
+        Do this 'count' times (def = 1)
+        """
         for i in range(count):
             self.output.append(indent(self.depth) + str(self.tokenizer.token))
             print(self.output[-1])
@@ -28,24 +40,35 @@ class CompilationEngine:
 
 
     def print_block(self, tag, func_name):
+        """
+        Prints:
+            <'tag'>
+                ... 'func_name's content ...
+            </'tag'>
+        """
         self.output.append(indent(self.depth) + open_tag(tag))
+        print(self.output[-1])
         self.depth += 1
-        print(indent(self.depth) + tag)
         func_name()
         self.depth -= 1
         self.output.append(indent(self.depth) + close_tag(tag))
+        print(self.output[-1])
 
 
 
     def compile_class(self):
+        """
+        Writes the tokens of a class object.
+        """
         self.print_tokens(3)
 
         while (self.tokenizer.token.content in ['field', 'static']):
             self.print_block('classVarDec', self.compile_classvar)
-        
+
         while (self.tokenizer.token.content in ['constructor', 'function',
                                                 'method']):
             self.print_block('subroutineDec', self.compile_subroutine)
+            pdb.set_trace()
 
 
     def compile_classvar(self):
@@ -57,7 +80,7 @@ class CompilationEngine:
         # Prints: ';'
         self.print_tokens()
 
-    
+
     def compile_subroutine(self):
         # Prints: keyword type name (
         self.print_tokens(4)
@@ -75,7 +98,7 @@ class CompilationEngine:
             self.print_tokens(count)
             if count == 2:
                 count += 1
-    
+
 
     def compile_subroutine_body(self):
         # Print: {
@@ -85,7 +108,9 @@ class CompilationEngine:
             self.print_block('varDec', self.compile_vardec)
         # prints statements
         self.print_block('statements', self.compile_statements)
- 
+        # }
+        self.print_tokens()
+
 
     def compile_vardec(self):
         # Prints var typename varname
@@ -100,17 +125,17 @@ class CompilationEngine:
         curr_token = self.tokenizer.token.content
         while curr_token in ['let', 'if', 'while', 'do', 'return']:
             if curr_token == 'let':
-                pdb.set_trace()
                 self.print_block('letStatement', self.compile_let)
             elif curr_token == 'if':
                 self.print_block('ifStatement', self.compile_if)
             elif curr_token == 'while':
                 self.print_block('whileStatement', self.compile_while)
             elif curr_token == 'do':
-                pdb.set_trace()
                 self.print_block('doStatement', self.compile_do)
             elif curr_token == 'return':
                 self.print_block('returnStatement', self.compile_return)
+            # Reload current token
+            curr_token = self.tokenizer.token.content
 
 
     def compile_let(self):
@@ -211,7 +236,6 @@ class CompilationEngine:
 
 
     def compile_subroutine_call(self, last_token = None):
-        pdb.set_trace()
         if not last_token:
             self.print_tokens()
         else:
@@ -235,4 +259,6 @@ class CompilationEngine:
         while self.tokenizer.token.content == ',':
             self.print_tokens()
             self.print_block('expression', self.compile_expression)
+
+
 

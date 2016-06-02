@@ -1,20 +1,32 @@
 # Imports
-import re
-from enum import Enum
+import re   # Regex
+import pdb
 
 DELIM = ' '
 
 
 def open_tag(string):
+    """
+    Returns an opening tag for the given string.
+    E.g., for a string 'class' this function returns <class>
+    """
     return '<' + string + '>'
 
 
 def close_tag(string):
+    """
+    Returns a closing tag for the given string.
+    E.g., for a string 'class' this function returns </class>
+    """
     return '</' + string + '>'
 
 
 # Token object
 class Token:
+    """
+    Represents a token in the jack code
+    """
+
     KEYWORD = 'keyword'
     SYMBOL = 'symbol'
     IDENTIFIER = 'identifier'
@@ -34,7 +46,7 @@ class Token:
         temp = temp.replace('<', '&lt')
         temp = temp.replace('>', '&gt')
         return open_tag(self.ttype) + DELIM + temp + DELIM + close_tag(self.ttype)
-    
+
 
     def __repr__(self):
         return str(self)
@@ -42,6 +54,9 @@ class Token:
 # End Token Class
 
 class JackTokenizer:
+    """
+    Gets a file and returns the tokens in it, one by one, using the method advance()
+    """
     # Constants
     KEYWORDS_STR = ['class', 'constructor', 'function', 'method', 'field', 'static',
                 'var', 'int', 'char', 'boolean', 'void', 'true', 'false', 'null',
@@ -50,7 +65,7 @@ class JackTokenizer:
                    '&', '\|', '<', '>', '=', '~']
 
     # Regexes
-    KEYWORDS_RGX = re.compile('\s*(' + '|'.join(KEYWORDS_STR) + ')\s*')
+    KEYWORDS_RGX = re.compile('\s*(' + '|'.join(KEYWORDS_STR) + ')\b\s*')
     SYMBOLS_RGX = re.compile('\s*(' + '|'.join(SYMBOLS_STR) + ')\s*')
     INT_RGX = re.compile('\s*(\d+)\s*')
     STR_RGX = re.compile('\s*"([^"]*)"s*')
@@ -84,11 +99,11 @@ class JackTokenizer:
     def advance(self):
         if not self.has_more_tokens():
             return
-        
+
         is_comment = False
         match_obj = None
         token_type = None
-        
+
         if self.COMMENT_RGX.match(self.content):
             match_obj = self.COMMENT_RGX.match(self.content)
             is_comment = True
@@ -112,7 +127,7 @@ class JackTokenizer:
         elif self.IDENTIFIER_RGX.match(self.content):
             match_obj = self.IDENTIFIER_RGX.match(self.content)
             token_type = Token.IDENTIFIER
-        
+
         if not match_obj:
             return
 
@@ -122,4 +137,10 @@ class JackTokenizer:
             self.advance()
         else:
             self.token = Token(token_type, match_obj.group(1))
-    
+        return
+
+
+    def get_all_tokens(self):
+        while self.has_more_tokens():
+            self.advance()
+            yield self.token

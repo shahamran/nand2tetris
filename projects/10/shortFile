@@ -1,1 +1,9 @@
-class shortfile { }
+class shortfile { 
+        field string hello;
+        field int i,dont,care;
+        
+        function boolean foo(int a, int b, int c) {
+                do foo(i,dont,care);
+                return;
+        }
+}
