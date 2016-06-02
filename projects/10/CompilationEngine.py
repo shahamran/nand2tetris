@@ -1,4 +1,5 @@
 from JackTokenizer import *
+import pdb
 
 OPS = ['+', '-', '*', '/', '&', '|', '<', '>', '=']
 UN_OPS = ['-', '~']
@@ -99,12 +100,14 @@ class CompilationEngine:
         curr_token = self.tokenizer.token.content
         while curr_token in ['let', 'if', 'while', 'do', 'return']:
             if curr_token == 'let':
+                pdb.set_trace()
                 self.print_block('letStatement', self.compile_let)
             elif curr_token == 'if':
                 self.print_block('ifStatement', self.compile_if)
             elif curr_token == 'while':
                 self.print_block('whileStatement', self.compile_while)
             elif curr_token == 'do':
+                pdb.set_trace()
                 self.print_block('doStatement', self.compile_do)
             elif curr_token == 'return':
                 self.print_block('returnStatement', self.compile_return)
@@ -208,6 +211,7 @@ class CompilationEngine:
 
 
     def compile_subroutine_call(self, last_token = None):
+        pdb.set_trace()
         if not last_token:
             self.print_tokens()
         else:
