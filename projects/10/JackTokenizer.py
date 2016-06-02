@@ -67,12 +67,12 @@ class JackTokenizer:
     # Regexes - each pattern has at least 1 capturing group.
     # group(1) is always the string that needs to be deleted
     KEYWORDS_RGX = re.compile('(\s*(' + '|'.join(KEYWORDS_STR) + '))\W\s*?')
-    SYMBOLS_RGX = re.compile('(\s*(' + '|'.join(SYMBOLS_STR) + ')\s*)')
-    INT_RGX = re.compile('(\s*(\d+)\s*)')
-    STR_RGX = re.compile('(\s*"([^"]*)"s*)')
-    IDENTIFIER_RGX = re.compile('(\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*)')
-    COMMENT_RGX = re.compile('(\s*//.*$|/\*(?:.|[\n])*?\*/\s*)', re.M)
-    LINE_END_RGX = re.compile('(\s*;\s*)', re.M)
+    SYMBOLS_RGX = re.compile('(\s*(' + '|'.join(SYMBOLS_STR) + '))\s*')
+    INT_RGX = re.compile('(\s*(\d+))\s*')
+    STR_RGX = re.compile('(\s*"([^"]*)")s*')
+    IDENTIFIER_RGX = re.compile('(\s*([a-zA-Z_][a-zA-Z0-9_]*))\s*')
+    COMMENT_RGX = re.compile('(\s*(?://.*$|/\*(?:.|[\n])*?\*/))\s*', re.M)
+    LINE_END_RGX = re.compile('(\s*;)\s*$', re.M)
 
     # Variables
     content = ''

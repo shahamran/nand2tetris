@@ -140,7 +140,6 @@ class CompilationEngine:
                 self.print_block('whileStatement', self.compile_while)
             elif curr_token == 'do':
                 self.print_block('doStatement', self.compile_do)
-                pdb.set_trace()
             elif curr_token == 'return':
                 self.print_block('returnStatement', self.compile_return)
             # Reload current token
@@ -196,7 +195,6 @@ class CompilationEngine:
 
 
     def compile_return(self):
-        pdb.set_trace()
         self.print_tokens() # return
         if self.tokenizer.token.content != ';':
             self.print_block('expression', self.compile_expression)
