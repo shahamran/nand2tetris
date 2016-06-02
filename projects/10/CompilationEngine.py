@@ -1,5 +1,5 @@
 from JackTokenizer import *
-import pdb
+# import pdb
 
 OPS = ['+', '-', '*', '/', '&', '|', '<', '>', '=']
 UN_OPS = ['-', '~']
@@ -22,11 +22,19 @@ class CompilationEngine:
     depth = 0
 
     def __init__(self, in_file):
+        # Reset data
+        self.output = []
+        self.depth = 0
         # Set the tokenizer with the input file
         self.tokenizer = JackTokenizer(in_file)
         # Go to the first line (token), and write the class XML
         self.tokenizer.advance()
         self.print_block('class', self.compile_class)
+
+
+    def __str__(self):
+        return '\n'.join(self.output)
+
 
     def print_tokens(self, count = 1):
         """
@@ -35,7 +43,6 @@ class CompilationEngine:
         """
         for i in range(count):
             self.output.append(indent(self.depth) + str(self.tokenizer.token))
-            print(self.output[-1])
             self.tokenizer.advance()
 
 
@@ -47,19 +54,17 @@ class CompilationEngine:
             </'tag'>
         """
         self.output.append(indent(self.depth) + open_tag(tag))
-        print(self.output[-1])
         self.depth += 1
         func_name()
         self.depth -= 1
         self.output.append(indent(self.depth) + close_tag(tag))
-        print(self.output[-1])
-
 
 
     def compile_class(self):
         """
         Writes the tokens of a class object.
         """
+        # class className {
         self.print_tokens(3)
 
         while (self.tokenizer.token.content in ['field', 'static']):
@@ -68,7 +73,10 @@ class CompilationEngine:
         while (self.tokenizer.token.content in ['constructor', 'function',
                                                 'method']):
             self.print_block('subroutineDec', self.compile_subroutine)
-            pdb.set_trace()
+
+        # }
+        self.print_tokens()
+        return
 
 
     def compile_classvar(self):
@@ -132,6 +140,7 @@ class CompilationEngine:
                 self.print_block('whileStatement', self.compile_while)
             elif curr_token == 'do':
                 self.print_block('doStatement', self.compile_do)
+                pdb.set_trace()
             elif curr_token == 'return':
                 self.print_block('returnStatement', self.compile_return)
             # Reload current token
@@ -182,11 +191,12 @@ class CompilationEngine:
 
     def compile_do(self):
         self.print_tokens() # do
-        self.print_block('subroutineCall', self.compile_subroutine_call)
+        self.compile_subroutine_call()
         self.print_tokens() # ;
 
 
     def compile_return(self):
+        pdb.set_trace()
         self.print_tokens() # return
         if self.tokenizer.token.content != ';':
             self.print_block('expression', self.compile_expression)
@@ -214,32 +224,27 @@ class CompilationEngine:
             return
 
         # Peek to next token
-        last_token = self.tokenizer.token
+        prev_token = self.tokenizer.token
         self.tokenizer.advance()
         # varName[expression]
         if self.tokenizer.token.content == '[':
-            self.output.append(indent(self.depth) + str(last_token))
+            self.output.append(indent(self.depth) + str(prev_token))
             self.print_tokens() # [
             self.print_block('expression', self.compile_expression)
             self.print_tokens() # ]
         # subroutineCall
         elif self.tokenizer.token.content in ['(', '.']:
-            self.output.append(indent(self.depth) + open_tag('subroutineCall'))
-            self.depth += 1
-            self.compile_subroutine_call(last_token)
-            self.depth -= 1
-            self.output.append(indent(self.depth) + close_tag('subroutineCall'))
+            self.compile_subroutine_call(prev_token)
         # just print last token (constants / varName)
         else:
-            self.output.append(indent(self.depth) + str(last_token))
-        print(self.output[-1])
+            self.output.append(indent(self.depth) + str(prev_token))
 
 
-    def compile_subroutine_call(self, last_token = None):
-        if not last_token:
+    def compile_subroutine_call(self, prev_token = None):
+        if not prev_token:
             self.print_tokens()
         else:
-            self.output.append(indent(self.depth) + str(last_token))
+            self.output.append(indent(self.depth) + str(prev_token))
         # (ClassName | varName).subroutineName
         if self.tokenizer.token.content == '.':
             self.print_tokens(2)

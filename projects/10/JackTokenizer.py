@@ -42,9 +42,9 @@ class Token:
 
 
     def __str__(self):
-        temp = self.content.replace('&', '&amp')
-        temp = temp.replace('<', '&lt')
-        temp = temp.replace('>', '&gt')
+        temp = self.content.replace('&', '&amp;')
+        temp = temp.replace('<', '&lt;')
+        temp = temp.replace('>', '&gt;')
         return open_tag(self.ttype) + DELIM + temp + DELIM + close_tag(self.ttype)
 
 
@@ -64,14 +64,15 @@ class JackTokenizer:
     SYMBOLS_STR = ['{', '}', '\(', '\)', '\[', '\]', '\.', ',', ';', '\+', '-', '\*', '/',
                    '&', '\|', '<', '>', '=', '~']
 
-    # Regexes
-    KEYWORDS_RGX = re.compile('\s*(' + '|'.join(KEYWORDS_STR) + ')\b\s*')
-    SYMBOLS_RGX = re.compile('\s*(' + '|'.join(SYMBOLS_STR) + ')\s*')
-    INT_RGX = re.compile('\s*(\d+)\s*')
-    STR_RGX = re.compile('\s*"([^"]*)"s*')
-    IDENTIFIER_RGX = re.compile('\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*')
-    COMMENT_RGX = re.compile('\s*//.*$|/\*(?:.|[\n])*?\*/\s*', re.M)
-    LINE_END_RGX = re.compile('\s*;\s*', re.M)
+    # Regexes - each pattern has at least 1 capturing group.
+    # group(1) is always the string that needs to be deleted
+    KEYWORDS_RGX = re.compile('(\s*(' + '|'.join(KEYWORDS_STR) + '))\W\s*?')
+    SYMBOLS_RGX = re.compile('(\s*(' + '|'.join(SYMBOLS_STR) + ')\s*)')
+    INT_RGX = re.compile('(\s*(\d+)\s*)')
+    STR_RGX = re.compile('(\s*"([^"]*)"s*)')
+    IDENTIFIER_RGX = re.compile('(\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*)')
+    COMMENT_RGX = re.compile('(\s*//.*$|/\*(?:.|[\n])*?\*/\s*)', re.M)
+    LINE_END_RGX = re.compile('(\s*;\s*)', re.M)
 
     # Variables
     content = ''
@@ -103,6 +104,13 @@ class JackTokenizer:
         is_comment = False
         match_obj = None
         token_type = None
+        #pdb.set_trace() # < ======= Here =========
+
+        # Check if this line is empty
+        if self.content.startswith('\n'):
+            self.content = self.content[1:]
+            self.advance()
+            return
 
         if self.COMMENT_RGX.match(self.content):
             match_obj = self.COMMENT_RGX.match(self.content)
@@ -131,12 +139,12 @@ class JackTokenizer:
         if not match_obj:
             return
 
-        self.content = self.content[match_obj.end():]
+        self.content = self.content[len(match_obj.group(1)):]
 
         if is_comment:
             self.advance()
         else:
-            self.token = Token(token_type, match_obj.group(1))
+            self.token = Token(token_type, match_obj.group(2))
         return
 
 

@@ -4,6 +4,7 @@ class shortfile {
         
         function boolean foo(int a, int b, int c) {
                 do foo(i,dont,care);
+                let hello = "comment in a string // ";
                 return;
         }
 }
