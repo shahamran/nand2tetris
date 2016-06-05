@@ -7,7 +7,9 @@ class VMWriter:
 
 
     def __init__(self, filename):
-        self.output_filename = filename
+        if filename.endswith('.jack'):
+            filename = filename[:-5]
+        self.output_filename = filename + '.vm'
 
 
     def write_push(self, segment, index):

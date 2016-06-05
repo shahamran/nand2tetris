@@ -20,9 +20,13 @@ class CompilationEngine:
     output = []
     tokenizer = None
     depth = 0
+    writer = None
+    symtable = None
 
     def __init__(self, in_file):
         # Reset data
+        self.writer = VMWriter(in_file)
+        self.symtable = SymbolTable()
         self.output = []
         self.depth = 0
         # Set the tokenizer with the input file
@@ -210,15 +214,22 @@ class CompilationEngine:
 
     def compile_term(self):
         # Check if unary op
-        if self.tokenizer.token.content in UN_OPS:
-            self.print_tokens()
-            self.print_block('term', self.compile_term)
+        if self.tokenizer.token.content == '-':
+            self.tokenizer.advance()
+            self.compile_term()
+            self.writer.write_arithmetic('neg')
             return
+        elif self.tokenizer.token.content == '~':
+            self.tokenizer.advance()
+            self.compile_term()
+            self.write.write_arithmetic('not')
+            return
+
         # Check if bracketed expression
         if self.tokenizer.token.content == '(':
-            self.print_tokens() # (
-            self.print_block('expression', self.compile_expression)
-            self.print_tokens() # )
+            self.tokenizer.advance()    # (
+            self.compile_expression()
+            self.tokenizer.advance()    # )
             return
 
         # Peek to next token
@@ -226,6 +237,9 @@ class CompilationEngine:
         self.tokenizer.advance()
         # varName[expression]
         if self.tokenizer.token.content == '[':
+            # Get variable name and type
+           
+            self.writer.write_push(self.symtable.kind_of
             self.output.append(indent(self.depth) + str(prev_token))
             self.print_tokens() # [
             self.print_block('expression', self.compile_expression)
