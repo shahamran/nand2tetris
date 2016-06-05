@@ -1,4 +1,3 @@
-#! /usr/bin/env python3
 from CompilationEngine import *
 import os, sys
 

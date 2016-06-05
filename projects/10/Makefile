@@ -1,7 +1,6 @@
 # --- Empty Makefile ---
 all: 
 	chmod +x JackAnalyzer
-	chmod +x JackAnalyzer.py
 
 TAR_FILES=README Makefile *.py JackAnalyzer 
 TAR_FLAGS=-cvf
