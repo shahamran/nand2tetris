@@ -188,7 +188,7 @@ class CompilationEngine:
             self.writer.write_pop('pointer', 0)
 
         # Compile parameter list
-        self.compile_paramlist()
+        self.compile_paramlist(routine_type)
 
         self.assert_char(')')
 
@@ -198,7 +198,9 @@ class CompilationEngine:
         self.symtable.end_subroutine()
 
 
-    def compile_paramlist(self):
+    def compile_paramlist(self, routine_type):
+        if routine_type == 'method':
+            self.symtable.scopes[-1].arg_count += 1
         while self.tokenizer.token.content != ')':
             vartype = self.compile_type()
             varname = self.compile_name()
@@ -297,26 +299,32 @@ class CompilationEngine:
         self.if_count += 1
 
         self.compile_expression()
-        self.writer.write_arithmetic('not')
-        self.writer.write_if('IF_FALSE' + str(curr_if))
+        #self.writer.write_arithmetic('not')
+        self.writer.write_if('IF_TRUE' + str(curr_if))
+        self.writer.write_goto('IF_FALSE' + str(curr_if))
 
         self.assert_char(')')
         self.assert_char('{')
         
+        self.writer.write_label('IF_TRUE' + str(curr_if))
+
         self.compile_statements()
 
         self.assert_char('}')
 
-        self.writer.write_goto('IF_END' + str(curr_if))
-        self.writer.write_label('IF_FALSE' + str(curr_if))
-
         if self.tokenizer.token.content == 'else':
+            self.writer.write_goto('IF_END' + str(curr_if))
+            self.writer.write_label('IF_FALSE' + str(curr_if))
+
             self.tokenizer.advance() # else
             self.assert_char('{')
             self.compile_statements()
             self.assert_char('}')
 
-        self.writer.write_label('IF_END' + str(curr_if))
+            self.writer.write_label('IF_END' + str(curr_if))
+        else:
+            self.writer.write_label('IF_FALSE' + str(curr_if))
+
 
 
     def compile_while(self):

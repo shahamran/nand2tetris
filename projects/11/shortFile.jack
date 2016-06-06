@@ -1,15 +1,22 @@
 class shortFile {
     function void foo() {
-        var Array a;
-        if (false) {
-        }
-        let a = Array.new(3);
+        var int a;
+        let a = 0;
+
         if (true) {
+            let a = 1;
+            if (false) {
+                let a = 2;
+            } else {
+                let a = 3;
+            }
+        } else {
+            let a = 4;
+            if (true) {
+                let a = 5;
+            } else {
+                let a = 6;
+            }
         }
-        let a[2] = 2;
-        while (1 = 1) {
-        }
-        let a = null;
-        return;
     }
 }
