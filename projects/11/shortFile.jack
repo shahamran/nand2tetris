@@ -1,17 +1,10 @@
 class shortFile {
-    field int size;
+    field boolean size;
+    field int game_over;
+    field Ball bouncing;
 
-    method void foo() {
-        var boolean size;
-        if (true) {
-            let size = false;
-        }
-        return;
-    }
-
-    method int bar() {
-        do foo();
-
+    constructor shortFile new() {
         return this;
     }
+    
 }

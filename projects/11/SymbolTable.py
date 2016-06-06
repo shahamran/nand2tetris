@@ -52,14 +52,14 @@ class SymbolTable:
         if len(self.scopes) == 0:
             return 0
 
-        if kind == 'STATIC':
+        if kind == 'static': # STATIC
             return Scope.static_count
         
-        if kind == 'FIELD':
+        if kind == 'this': # FIELD
             return self.scopes[-1].field_count
-        elif kind == 'ARG':
+        elif kind == 'argument': # ARG
             return self.scopes[-1].arg_count
-        elif kind == 'VAR':
+        elif kind == 'local': # VAR
             return self.scopes[-1].var_count
         return
 
@@ -83,3 +83,6 @@ class SymbolTable:
             return self.scopes[-1].dic[name][2]
         else:
             return None
+
+    def __contains__(self, varname):
+        return varname in self.dic

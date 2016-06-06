@@ -11,6 +11,16 @@ def indent(depth):
     """
     return DELIM * 2 * depth
 
+def print_error(error_msg):
+    print(error_msg)
+    exit(1)
+
+
+def assert_char(expected, actual, line_num):
+    if actual != expected:
+        print_error("Expected '" + expected + "'. Got: " + actual + 
+                    "\nLine: " + str(line_num))
+
 
 class CompilationEngine:
     """
@@ -21,12 +31,18 @@ class CompilationEngine:
     tokenizer = None
     depth = 0
     writer = None
+    classname = ''
     symtable = None
+    curr_subroutine = ('','')
+    while_count = 0
+    if_count = 0
 
     def __init__(self, in_file):
         # Reset data
         self.writer = VMWriter(in_file)
         self.symtable = SymbolTable()
+        self.classname = in_file.split('/')[-1]
+
         self.output = []
         self.depth = 0
         # Set the tokenizer with the input file
@@ -93,7 +109,26 @@ class CompilationEngine:
         self.print_tokens()
 
 
+    def compile_type(self):
+        vartype = self.tokenizer.token.content
+        if self.tokenizer.token.ttype != Token.IDENTIFIER:
+            if vartype not in ['char', 'int', 'boolean']:
+                print_error("Illegal variable type: '" + vartype + "'")
+        self.tokenizer.advance() # type
+        return vartype
+
+
+    def compile_name(self):
+        varname = self.tokenizer.token.content
+        if self.tokenizer.token.ttype != Token.IDENTIFIER:
+            print_error("Illegal variable name: '" + varname + "'")
+        self.tokenizer.advance() # name
+        return varname
+
+
     def compile_subroutine(self):
+        routine_type = self.tokenizer.token.content
+        
         # Prints: keyword type name (
         self.print_tokens(4)
         # Prints parameter list
@@ -105,111 +140,229 @@ class CompilationEngine:
 
 
     def compile_paramlist(self):
-        count = 2
+        params_count = 0
         while self.tokenizer.token.content != ')':
-            self.print_tokens(count)
-            if count == 2:
-                count += 1
+            params_count += 1
+            vartype = self.tokenizer.token.content
+            if self.tokenizer.token.ttype != Token.IDENTIFIER:
+                if vartype not in ['char', 'int', 'boolean']:
+                    print_error("Illegal variable type: '" + vartype + "'")
+            self.tokenizer.advance() # type
+
+            varname = self.tokenizer.token.content
+            if self.tokenizer.token.ttype != Token.IDENTIFIER:
+                print_error("Illegal variable name: '" + varname + "'")
+            self.symtable.define('argument', varname, vartype)    
+            self.tokenizer.advance() # name
+
+            if self.tokenizer.token.content != ',':
+                assert_char(')', self.tokenizer.token.content,
+                            self.tokenizer.line_num)
+            else:
+                self.tokenizer.advance() # ,
+
+        self.tokenizer.advance() # )
+        return params_count
 
 
     def compile_subroutine_body(self):
-        # Print: {
-        self.print_tokens()
+        assert_char('{', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # {
+
         # Print var decleration
         while self.tokenizer.token.content == 'var':
-            self.print_block('varDec', self.compile_vardec)
-        # prints statements
-        self.print_block('statements', self.compile_statements)
-        # }
-        self.print_tokens()
+            self.compile_vardec()
+
+        # compile statements
+        self.compile_statements()
+
+        assert_char('}', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # }
 
 
     def compile_vardec(self):
-        # Prints var typename varname
-        self.print_tokens(3)
+        self.tokenizer.advance() # var
+
+        vartype = self.tokenizer.token.content
+        if self.tokenizer.token.ttype != Token.IDENTIFIER:
+            if vartype not in ['char', 'int', 'boolean']:
+                print_error("Illegal variable type: '" + vartype + "'")
+        self.tokenizer.advance() # type
+
+        varname = self.tokenizer.token.content
+        if self.tokenizer.token.ttype != Token.IDENTIFIER:
+            print_error("Illegal variable name: '" + varname + "'")
+        self.symtable.define('var', varname, vartype)    
+        self.tokenizer.advance() # name
+        
         while self.tokenizer.token.content == ',':
-            self.print_tokens(2)
-        # Prints ';'
-        self.print_tokens()
+            self.tokenizer.advance() # ,
+            varname = self.tokenizer.token.content
+            if self.tokenizer.token.ttype != Token.IDENTIFIER:
+                print_error("Illegal variable name: '" + varname + "'")
+            self.symtable.define('var', varname, vartype)    
+            self.tokenizer.advance() # name
+
+        assert_char(';', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # ;
 
 
     def compile_statements(self):
         curr_token = self.tokenizer.token.content
         while curr_token in ['let', 'if', 'while', 'do', 'return']:
             if curr_token == 'let':
-                self.print_block('letStatement', self.compile_let)
+                self.compile_let()
             elif curr_token == 'if':
-                self.print_block('ifStatement', self.compile_if)
+                self.compile_if()
             elif curr_token == 'while':
-                self.print_block('whileStatement', self.compile_while)
+                self.compile_while()
             elif curr_token == 'do':
-                self.print_block('doStatement', self.compile_do)
+                self.compile_do()
             elif curr_token == 'return':
-                self.print_block('returnStatement', self.compile_return)
+                self.compile_return()
             # Reload current token
             curr_token = self.tokenizer.token.content
 
 
     def compile_let(self):
+        is_array = False
+
         # Prints let varName
-        self.print_tokens(2)
+        self.tokenizer.advance() # let
+        varname = self.tokenizer.token.content
+        if varname not in self.symtable:
+            print_error('Cannot assign to an undeclared variable: ' + varname)
+        vartype = self.symtable.type_of(varname)
+        self.tokenizer.advance() # varName
+
         # Checks for array access
         if self.tokenizer.token.content == '[':
-            self.print_tokens() # Prints '['
-            self.print_block('expression', self.compile_expression)
-            self.print_tokens() # Prints ']'
-        # Prints '='
-        self.print_tokens()
-        self.print_block('expression', self.compile_expression)
-        # Prints ';'
-        self.print_tokens()
+            if vartype != 'Array':
+                print_error('Variable ' + varname + ' is not and array.')
+            self.compile_array_access(varname)
+            is_array = True
+
+        assert_char('=', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # =
+        exp_type = self.compile_expression()
+        
+        if is_array:
+            self.writer.write_pop('that', 0)
+        else:
+            self.writer.write_pop(self.symtable.kind_of(varname),
+                                  self.symtable.index_of(varname))
+        assert_char(';', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # ;
 
 
     def compile_if(self):
         # Prints if (
-        self.print_tokens(2)
-        self.print_block('expression', self.compile_expression)
+        self.tokenizer.advance() # if
+        assert_char('(', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # (
+
+        self.compile_expression()
+        self.writer.write_arithmetic('not')
+        self.writer.write_if('IF_FALSE' + str(self.if_count))
+
         # Print ) {
-        self.print_tokens(2)
-        self.print_block('statements', self.compile_statements)
+        assert_char(')', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # )
+        assert_char('{', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # {
+        
+        self.compile_statements()
+
         # Print }
-        self.print_tokens()
+        assert_char('}', self.tokenizer.token.content, self.tokenizer.line_num)
+        self.tokenizer.advance() # }
+
+        self.writer.write_goto('IF_END' + str(self.if_count))
+        self.writer.write_label('IF_FALSE' + str(self.if_count))
 
         if self.tokenizer.token.content == 'else':
-            self.print_tokens(2) # else {
-            self.print_block('statements', self.compile_statements)
-            self.print_tokens() # Print }
+            self.tokenizer.advance() # else
+            assert_char('{', self.tokenizer.token.content,
+                        self.tokenizer.line_num)
+            self.tokenizer.advance() # {
+
+            self.compile_statements()
+
+            assert_char('}', self.tokenizer.token.content,
+                        self.tokenizer.line_num)
+            self.tokenizer.advance() # }
+
+        self.writer.write_label('IF_END' + str(self.if_count))
+        self.if_count += 1
 
 
     def compile_while(self):
-        # Print while (
-        self.print_tokens(2)
-        self.print_block('expression', self.compile_expression)
-        # Print ) {
-        self.print_tokens(2)
-        self.print_block('statements', self.compile_statements)
-        # Print }
-        self.print_tokens()
+        # while (
+        self.tokenizer.advance();
+        if self.tokenizer.token.content != '(':
+            print_error("Expected '(' in the start of 'while' condition")
+        self.tokenizer.advance()
+        # Print while condition label
+        self.writer.write_label('WHILE_EXP' + str(while_count))
+        self.compile_expression()
+        self.writer.write_arithmetic('not')
+        self.writer.write_if('WHILE_END' + str(while_count))
+
+        if self.tokenizer.token.content != ')':
+            print_error("Expected ')' in the end of 'while' condition")
+        self.tokenizer.advance() # )
+        if self.tokenizer.token.content != '{':
+            print_error("Expected '{' in the start of while statement")
+        self.tokenizer.advance() # {
+
+        self.compile_statements()
+
+        if self.tokenizer.token.content != '}':
+            print_error("Expected '}' in the end of 'while' statement")
+        self.tokenizer.advance() # }
+
+        self.writer.write_goto('WHILE_EXP' + str(while_count))
+        self.writer.write_label('WHILE_END' + str(while_count))
+
+        self.while_count += 1
 
 
     def compile_do(self):
-        self.print_tokens() # do
+        self.tokenizer.advance() # do
         self.compile_subroutine_call()
-        self.print_tokens() # ;
+        if self.tokenizer.token.content != ';':
+            print_error("Expected ';' after a 'do' statement")
+        self.tokenizer.advance() # ;
 
 
     def compile_return(self):
-        self.print_tokens() # return
+        self.tokenizer.advance() # return
+        if self.tokenizer.token.content != ';' and self.curr_subroutine[1] !=
+        'void':
+            self.compile_expression()
+        elif self.tokenizer.token.content != ';' and self.curr_subroutine[1] ==
+        'void':
+            print_error('void subroutine ' + curr_subroutine[0] + ' should not
+                        return a value.')
+        elif self.tokenizer.token.content == ';' and self.curr_subroutine[1] ==
+        'void':
+            self.writer.write_push('constant', 0)
+        else:
+            print_error('Function ' + curr_subroutine[0] + ' should return a
+                        value.')
+        self.writer.write_return();
         if self.tokenizer.token.content != ';':
-            self.print_block('expression', self.compile_expression)
-        self.print_tokens() # ;
+            print_error("Expected ';' after a 'return' statement")
+        self.tokenizer.advance() # ;
 
 
     def compile_expression(self):
-        self.print_block('term', self.compile_term)
+        self.compile_term()
         while self.tokenizer.token.content in OPS:
-            self.print_tokens() # op
-            self.print_block('term', self.compile_term)
+            op = self.tokenizer.token.content
+            self.tokenizer.advance()
+            self.compile_term()
+            self.writer.write_arithmetic(op)
 
 
     def compile_array_access(self, varname):
@@ -250,7 +403,7 @@ class CompilationEngine:
         if self.tokenizer.token.ttype in [Token.INT_CONST, Token.STR_CONST,
                                           Token.KEYWORD]:
             if self.tokenizer.token.ttype == Token.INT_CONST:
-                write_push('constant', 0)
+                self.writer.write_push('constant', int(self.tokenizer.token.content))
             elif self.tokenizer.token.ttype == Token.STR_CONST:
                 self.writer.write_string_const(self.tokenizer.token.content)
             elif self.tokenizer.token.ttype == Token.KEYWORD:
@@ -296,33 +449,71 @@ class CompilationEngine:
             return
 
         # Otherwise, just print last token (varName)
-        self.compile_push_varname(prev_token.content)
+        self.writer.write_varname(prev_token.content)
 
 
     def compile_subroutine_call(self, prev_token = None):
+        caller = ''
+        nargs = 0
         if not prev_token:
-            self.print_tokens()
+            caller = self.tokenizer.token.content
+            self.tokenizer.advance()
         else:
-            self.output.append(indent(self.depth) + str(prev_token))
-        # (ClassName | varName).subroutineName
-        if self.tokenizer.token.content == '.':
-            self.print_tokens(2)
+            caller = prev_token.content
 
-        self.print_tokens() # (
-        self.print_block('expressionList', self.compile_expression_list)
-        self.print_tokens() # )
+        if symtable.kind_of(caller):
+            # This means the caller is a varName
+            nargs += 1
+            self.compile_push_varname(caller)
+            caller_type = self.symtable.type_of(caller)
+        else:
+            # className
+            caller_type = caller
+
+        if self.tokenizer.token.content == '.':
+            self.tokenizer.advance() # .
+            subroutine_name = caller + '.' + self.tokenizer.token.content
+            self.tokenizer.advance() # subroutineName
+            # Now we're in (
+        else:
+            nargs += 1
+            self.writer.write_push('pointer', 0)
+            subroutine_name = self.classname + '.' + caller
+
+
+        self.tokenizer.advance() # (
+        nargs += self.compile_expression_list()
+        if self.tokenizer.token.content != ')':
+            print_error('Expected ). Got: ' + self.tokenizer.token.content)
+        self.tokenizer.advance() # )
+        
+        class_name, func_name = subroutine_name.split('.')
+        
+        if class_name == self.classname:
+            if func_name not in symtable.dec_functions:
+                print_error("Function or method " + func_name + " doesn't exist")
+            elif symtable.dec_functions[func_name] != nargs:
+                print_error("Function " + func_name + " gets " +
+                            str(symtable.dec_functions[func_name]) + " arguments.
+                            Got: " + str(nargs))
+
+        self.writer.write_call(subroutine_name, nargs)
 
 
     def compile_expression_list(self):
+        expressions_count = 0
         # Check if not empty
         if self.tokenizer.token.content == ')':
-            return
+            return expressions_count
         # Print first expression
-        self.print_block('expression', self.compile_expression)
+        self.compile_expression()
+        expressions_count += 1
         # and all other expressions
         while self.tokenizer.token.content == ',':
-            self.print_tokens()
-            self.print_block('expression', self.compile_expression)
+            self.tokenizer.advance() # ,
+            self.compile_expression()
+            expressions_count += 1
+        return expressions_count
 
 
 
