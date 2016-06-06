@@ -278,6 +278,9 @@ class CompilationEngine:
             self.print_error(str(exp_type) + " is illegal here")
         
         if is_array:
+            self.writer.write_pop('temp', 0)
+            self.writer.write_pop('pointer', 1)
+            self.writer.write_push('temp', 0)
             self.writer.write_pop('that', 0)
         else:
             self.writer.write_pop(self.symtable.kind_of(varname),
@@ -389,8 +392,9 @@ class CompilationEngine:
         self.assert_char(']')
         # Get *(var + index)
         self.writer.write_arithmetic('add')
-        # write the result into 'that'
-        self.writer.write_pop('pointer', 1)
+        # write the result into 'temp'
+        #self.writer.write_pop('temp', 0)
+        # self.writer.write_pop('pointer', 1)
 
 
     def compile_push_varname(self, varname):
@@ -455,6 +459,7 @@ class CompilationEngine:
             # Get variable name and kind
             varname = prev_token.content
             self.compile_array_access(varname)
+            self.writer.write_pop('pointer', 1)
             self.writer.write_push('that', 0)
             return None
 
