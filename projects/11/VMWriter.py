@@ -42,10 +42,32 @@ class VMWriter:
 
     def write_function(self, name, nlocals):
         self.output.append('function' + DELIM + name + DELIM + str(nargs))
+        self.write_push('argument', 0)
+        self.write_pop('pointer', 0)
 
 
     def write_return(self):
         self.output.append(INDENT + 'return')
+
+
+    def write_string_const(self, string):
+        self.write_push('constant', len(string))
+        self.write_call('String.new', 1)
+        for c in string:
+            self.write_push('constant', ord(c))
+            self.write_call('String.appendChar', 2)
+        return
+
+
+    def write_keyword_const(self, keyword):
+        if keyword in ['null', 'false']:
+            self.write_push('constant', 0)
+        elif keyword == 'true':
+            self.write_push('constant', 0)
+            self.write_arithmetic('neg')
+        elif keyword == 'this':
+            self.write_push('pointer', 0)
+        return
 
 
     def close(self):

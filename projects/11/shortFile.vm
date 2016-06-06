@@ -1,0 +1,21 @@
+function shortFile.foo 1
+push argument 0
+pop pointer 0
+push constant 0
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+pop local 0
+label IF_FALSE0
+push constant 0
+return
+function shortFile.bar 0
+push argument 0
+pop pointer 0
+push pointer 0
+call shortFile.foo 1
+pop temp 0
+push pointer 0
+return

@@ -212,44 +212,91 @@ class CompilationEngine:
             self.print_block('term', self.compile_term)
 
 
+    def compile_array_access(self, varname):
+        # Push var
+        self.compile_push_varname(varname)
+        # Push index
+        self.tokenizer.advance() # [
+        self.tokenizer.compile_expression()
+        if self.tokenizer.token.content != ']':
+            print_error('Expected ]. Got: ' + self.tokenizer.token.content)
+        self.tokenizer.advance() # ]
+        # Get *(var + index)
+        self.writer.write_arithmetic('add')
+        # write the result into 'that'
+        self.writer.write_pop('pointer', 1)
+        return
+
+
+    def compile_push_varname(self, varname):
+        var_kind = self.symtable.kind_of(varname)
+        var_index = self.symtable.index_of(varname)
+        if not var_kind:
+            print_error('No such variable ' + varname)
+        self.writer.write_push(var_kind, var_index)
+
+
+    def compile_pop_varname(self, varname):
+        var_kind = self.symtable.kind_of(varname)
+        var_index = self.symtable.index_of(varname)
+        if not var_kind:
+            print_error('No such variable ' + varname)
+        self.writer.write_pop(var_kind, var_index)
+
+
     def compile_term(self):
-        # Check if unary op
-        if self.tokenizer.token.content == '-':
+        # Check what kind of term
+        # Constant case:
+        if self.tokenizer.token.ttype in [Token.INT_CONST, Token.STR_CONST,
+                                          Token.KEYWORD]:
+            if self.tokenizer.token.ttype == Token.INT_CONST:
+                write_push('constant', 0)
+            elif self.tokenizer.token.ttype == Token.STR_CONST:
+                self.writer.write_string_const(self.tokenizer.token.content)
+            elif self.tokenizer.token.ttype == Token.KEYWORD:
+                self.writer.write_keyword_const(self.tokenizer.token.content)
             self.tokenizer.advance()
-            self.compile_term()
-            self.writer.write_arithmetic('neg')
-            return
-        elif self.tokenizer.token.content == '~':
-            self.tokenizer.advance()
-            self.compile_term()
-            self.write.write_arithmetic('not')
             return
 
+        # Check if unary op
+        if self.tokenizer.token.content in UN_OPS:
+            op = self.tokenizer.token.content
+            self.tokenizer.advance()
+            self.compile_term()
+            if op == '-':
+                self.writer.write_arithmetic('neg')
+            elif op == '~':
+                self.writer.write_arithmetic('not')
+            self.tokenizer.advance()
+            return
+        
         # Check if bracketed expression
         if self.tokenizer.token.content == '(':
             self.tokenizer.advance()    # (
             self.compile_expression()
+            if self.tokenizer.token.content != ')':
+                print_error('Expected ). Got: ' + self.tokenizer.token.content)
             self.tokenizer.advance()    # )
             return
 
         # Peek to next token
         prev_token = self.tokenizer.token
         self.tokenizer.advance()
+
         # varName[expression]
         if self.tokenizer.token.content == '[':
-            # Get variable name and type
-           
-            self.writer.write_push(self.symtable.kind_of
-            self.output.append(indent(self.depth) + str(prev_token))
-            self.print_tokens() # [
-            self.print_block('expression', self.compile_expression)
-            self.print_tokens() # ]
+            # Get variable name and kind
+            varname = prev_token.content
+            self.compile_array_access(varname)
+            return
+
         # subroutineCall
-        elif self.tokenizer.token.content in ['(', '.']:
+        if self.tokenizer.token.content in ['(', '.']:
             self.compile_subroutine_call(prev_token)
-        # just print last token (constants / varName)
-        else:
-            self.output.append(indent(self.depth) + str(prev_token))
+            return
+
+        # Otherwise, just print last token (varName)
+        self.compile_push_varname(prev_token.content)
 
 
     def compile_subroutine_call(self, prev_token = None):

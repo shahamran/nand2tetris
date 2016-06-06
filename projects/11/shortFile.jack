@@ -1,0 +1,17 @@
+class shortFile {
+    field int size;
+
+    method void foo() {
+        var boolean size;
+        if (true) {
+            let size = false;
+        }
+        return;
+    }
+
+    method int bar() {
+        do foo();
+
+        return this;
+    }
+}
