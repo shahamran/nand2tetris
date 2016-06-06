@@ -7,6 +7,7 @@ class VMWriter:
 
 
     def __init__(self, filename):
+        self.output = []
         if filename.endswith('.jack'):
             filename = filename[:-5]
         self.output_filename = filename + '.vm'
@@ -17,10 +18,31 @@ class VMWriter:
 
 
     def write_pop(self, segment, index):
-        self.output.append(INDENT + 'pop', + DELIM + segment + DELIM + str(index))
+        self.output.append(INDENT + 'pop' + DELIM + segment + DELIM + str(index))
 
 
     def write_arithmetic(self, command):
+        if command == '+':
+            command = 'add'
+        elif command == '-':
+            command = 'sub'
+        elif command == '*':
+            self.write_call('Math.multiply', 2)
+            return
+        elif command == '/':
+            self.write_call('Math.divide', 2)
+            return
+        elif command == '&':
+            command = 'and'
+        elif command == '|':
+            command = 'or'
+        elif command == '<':
+            command = 'lt'
+        elif command == '>':
+            command = 'gt'
+        elif command == '=':
+            command = 'eq'
+
         self.output.append(INDENT + command)
 
 
@@ -41,9 +63,7 @@ class VMWriter:
 
 
     def write_function(self, name, nlocals):
-        self.output.append('function' + DELIM + name + DELIM + str(nargs))
-        self.write_push('argument', 0)
-        self.write_pop('pointer', 0)
+        self.output.append('function' + DELIM + name + DELIM + str(nlocals))
 
 
     def write_return(self):
@@ -56,7 +76,7 @@ class VMWriter:
         for c in string:
             self.write_push('constant', ord(c))
             self.write_call('String.appendChar', 2)
-        return
+        return 'String'
 
 
     def write_keyword_const(self, keyword):
@@ -64,10 +84,13 @@ class VMWriter:
             self.write_push('constant', 0)
         elif keyword == 'true':
             self.write_push('constant', 0)
-            self.write_arithmetic('neg')
+            self.write_arithmetic('not')
         elif keyword == 'this':
             self.write_push('pointer', 0)
-        return
+
+        if keyword in ['true', 'false']:
+            keyword = 'boolean'
+        return keyword
 
 
     def close(self):

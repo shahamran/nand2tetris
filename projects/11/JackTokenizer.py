@@ -1,5 +1,6 @@
 # Imports
 import re   # Regex
+import sys
 import pdb
 
 DELIM = ' '
@@ -77,9 +78,11 @@ class JackTokenizer:
     # Variables
     content = ''
     token = None
+    line_num = 0
 
 
     def __init__(self, fileName):
+        self.token = None
 
         with open(fileName,'r') as f:
             self.content = f.read()
@@ -99,7 +102,7 @@ class JackTokenizer:
 
     def advance(self):
         if not self.has_more_tokens():
-            return
+            return 
 
         is_comment = False
         match_obj = None
@@ -110,7 +113,7 @@ class JackTokenizer:
         if self.content.startswith('\n'):
             self.content = self.content[1:]
             self.advance()
-            return
+            return 
 
         if self.COMMENT_RGX.match(self.content):
             match_obj = self.COMMENT_RGX.match(self.content)
@@ -144,8 +147,9 @@ class JackTokenizer:
         if is_comment:
             self.advance()
         else:
-            self.token = Token(token_type, match_obj.group(2))
-        return
+            self.token = Token(token_type,
+                               match_obj.group(2).encode('unicode-escape').decode())
+        return 
 
 
     def get_all_tokens(self):

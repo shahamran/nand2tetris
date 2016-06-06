@@ -1,10 +1,15 @@
 class shortFile {
-    field boolean size;
-    field int game_over;
-    field Ball bouncing;
-
-    constructor shortFile new() {
-        return this;
+    function void foo() {
+        var Array a;
+        if (false) {
+        }
+        let a = Array.new(3);
+        if (true) {
+        }
+        let a[2] = 2;
+        while (1 = 1) {
+        }
+        let a = null;
+        return;
     }
-    
 }

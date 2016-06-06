@@ -1,3 +1,4 @@
+PRIMITIVES = ['int', 'char', 'boolean']
 
 class Scope:
     # static variable
@@ -13,16 +14,16 @@ class Scope:
 
     def add_val(self, kind, name, stype):
         index = 0
-        if kind == 'STATIC':
+        if kind == 'static':
             index = self.static_count
             Scope.static_count += 1
-        elif kind == 'FIELD':
+        elif kind == 'this':
             index = self.field_count
             self.field_count += 1
-        elif kind == 'ARG':
+        elif kind == 'argument':
             index = self.arg_count
             self.arg_count +=1
-        elif kind == 'VAR':
+        elif kind == 'local':
             index = self.var_count
             self.var_count += 1
 
@@ -30,10 +31,13 @@ class Scope:
 
 
 class SymbolTable:
+    dec_functions = {}
     scopes = []
 
 
     def __init__(self):
+        self.dec_functions = {}
+        self.scopes = []
         self.start_subroutine()
 
 
@@ -41,7 +45,13 @@ class SymbolTable:
         self.scopes.append(Scope())
 
 
+    def end_subroutine(self):
+        self.scopes = self.scopes[:-1]
+
+
     def define(self, kind, name, stype):
+        if stype == 'char':
+            stype = 'int'
         if len(self.scopes) == 0:
             return
 
@@ -56,7 +66,7 @@ class SymbolTable:
             return Scope.static_count
         
         if kind == 'this': # FIELD
-            return self.scopes[-1].field_count
+            return self.scopes[0].field_count
         elif kind == 'argument': # ARG
             return self.scopes[-1].arg_count
         elif kind == 'local': # VAR
@@ -65,24 +75,29 @@ class SymbolTable:
 
 
     def kind_of(self, name):
-        if name in self.scopes[-1].dic.keys():
-            return self.scopes[-1].dic[name][0]
-        else:
-            return None
+        for i in reversed(range(len(self.scopes))):
+            if name in self.scopes[i].dic.keys():
+                return self.scopes[i].dic[name][0]
+        return None
 
 
     def type_of(self, name):
-        if name in self.scopes[-1].dic.keys():
-            return self.scopes[-1].dic[name][1]
-        else:
-            return None
+        for i in reversed(range(len(self.scopes))):
+            if name in self.scopes[i].dic.keys():
+                type_name = self.scopes[i].dic[name][1]
+                return type_name
+        return None
 
 
     def index_of(self, name):
-        if name in self.scopes[-1].dic.keys():
-            return self.scopes[-1].dic[name][2]
-        else:
-            return None
+        for i in reversed(range(len(self.scopes))):
+            if name in self.scopes[i].dic.keys():
+                return self.scopes[i].dic[name][2]
+        return None
+
 
     def __contains__(self, varname):
-        return varname in self.dic
+        for i in range(len(self.scopes)):
+            if varname in self.scopes[i].dic:
+                return True
+        return False
