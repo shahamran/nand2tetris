@@ -1,0 +1,33 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@mail.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                   Project 10- Syntax Analysis -2
+                   ------------------------------
+
+
+Submitted Files
+---------------
+README		- This file.
+Makefile	- An empty file. no need to compile in Python
+JackCompiler- A shell script that runs the python script with the given the 
+    		  jack file name (or folder) as an argument
+JackTokenizer.py - scans the jack code token by token
+CompilationEngine.py - compile the given jack code to token reprentation
+JackCompilerr.py - main program, create all the xml files from the given
+            folder or file
+VMWiter.py - writes the vm script
+SymbolTable.py - manages the functions and varibles of every jack file
+
+Run command
+-----------
+
+./JackCompiler <file_name>
+
+Remarks
+-------
+* executed as suggested in the book design
+* "If I'm not back in five minutes, just wait longer."
+	Ace Ventura: Pet Detective
