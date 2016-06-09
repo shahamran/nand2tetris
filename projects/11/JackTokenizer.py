@@ -73,16 +73,17 @@ class JackTokenizer:
     STR_RGX = re.compile('(\s*"([^"]*)")s*')
     IDENTIFIER_RGX = re.compile('(\s*([a-zA-Z_][a-zA-Z0-9_]*))\s*')
     COMMENT_RGX = re.compile('(\s*(?://.*$|/\*(?:.|[\n])*?\*/))\s*', re.M)
-    LINE_END_RGX = re.compile('(\s*;)\s*$', re.M)
+    NEW_LINE_RGX = re.compile('(\s*?[\n])', re.M)
 
     # Variables
     content = ''
     token = None
-    line_num = 0
+    line_num = 1
 
 
     def __init__(self, fileName):
         self.token = None
+        self.line_num = 1
 
         with open(fileName,'r') as f:
             self.content = f.read()
@@ -102,7 +103,7 @@ class JackTokenizer:
 
     def advance(self):
         if not self.has_more_tokens():
-            return 
+            return
 
         is_comment = False
         match_obj = None
@@ -110,12 +111,12 @@ class JackTokenizer:
         #pdb.set_trace() # < ======= Here =========
 
         # Check if this line is empty
-        if self.content.startswith('\n'):
-            self.content = self.content[1:]
-            self.advance()
-            return 
+        if self.NEW_LINE_RGX.match(self.content):
+            match_obj = self.NEW_LINE_RGX.match(self.content)
+            self.line_num += 1
+            is_comment = True
 
-        if self.COMMENT_RGX.match(self.content):
+        elif self.COMMENT_RGX.match(self.content):
             match_obj = self.COMMENT_RGX.match(self.content)
             is_comment = True
 

@@ -1,6 +1,7 @@
 from JackTokenizer import *
 from VMWriter import *
 from SymbolTable import *
+import os
 import pdb
 
 OPS = ['+', '-', '*', '/', '&', '|', '<', '>', '=']
@@ -15,8 +16,10 @@ class CompilationEngine:
     # Variables
     tokenizer = None
     writer = None
+    filename = ''
     classname = ''
     symtable = None
+    # (<func_name>, <func_type>, <is_ctor>)
     curr_subroutine = ('','', False)
     while_count = 0
     if_count = 0
@@ -27,10 +30,11 @@ class CompilationEngine:
     def __init__(self, in_file):
         # Reset data
         self.if_count, self.while_count = 0, 0
-        self.curr_subroutine = ('','',False)
+        self.curr_subroutine = ('', '', False)
         self.writer = VMWriter(in_file)
         self.symtable = SymbolTable()
-        self.classname = in_file.split('/')[-1][:-5]
+        self.filename = os.path.split(in_file)[1]
+        self.classname = self.filename[:self.filename.find(".jack")]
 
         self.first_pass(in_file)
 
@@ -42,8 +46,8 @@ class CompilationEngine:
         self.compile_class()
 
     def print_error(self, error_msg):
-        pdb.set_trace() # <============== HERE =============
-        print("In " + self.classname + " (line " + str(self.tokenizer.line_num)
+        #pdb.set_trace() # <============== HERE =============
+        print("In " + self.filename + " (line " + str(self.tokenizer.line_num)
               + "): " + error_msg)
         sys.exit(1)
 
@@ -55,7 +59,7 @@ class CompilationEngine:
             self.print_error("Expected '" + expected + "'. Got: " + actual)
         if self.tokenizer.has_more_tokens():
             self.tokenizer.advance()
-        
+
 
     def first_pass(self, filename):
         tokens = JackTokenizer(filename)
@@ -107,7 +111,7 @@ class CompilationEngine:
         self.tokenizer.advance() # className
 
         self.assert_char('{')
-        
+
         while (self.tokenizer.token.content in ['field', 'static']):
             self.compile_classvar()
 
@@ -159,7 +163,7 @@ class CompilationEngine:
     def compile_subroutine(self):
         routine_type = self.tokenizer.token.content
         self.tokenizer.advance()
-        
+
         func_type = self.tokenizer.token.content
         if self.tokenizer.token.ttype != Token.IDENTIFIER:
             if func_type not in ['char', 'int', 'boolean', 'void']:
@@ -178,8 +182,8 @@ class CompilationEngine:
 
         if routine_type == 'constructor':
             if func_type != self.classname:
-                self.print_error("The return type of a constructor must be of \
-                                 the class type")
+                self.print_error("The return type of a constructor must be of " \
+                                 + "the class type")
             self.writer.write_push('constant', self.symtable.var_count('this'))
             self.writer.write_call('Memory.alloc', 1)
             self.writer.write_pop('pointer', 0)
@@ -204,7 +208,7 @@ class CompilationEngine:
         while self.tokenizer.token.content != ')':
             vartype = self.compile_type()
             varname = self.compile_name()
-            self.symtable.define('argument', varname, vartype)    
+            self.symtable.define('argument', varname, vartype)
 
             if self.tokenizer.token.content != ',':
                 break
@@ -278,7 +282,7 @@ class CompilationEngine:
 
         if not is_array and vartype and exp_type and vartype != exp_type:
             self.print_error(str(exp_type) + " is illegal here")
-        
+
         if is_array:
             self.writer.write_pop('temp', 0)
             self.writer.write_pop('pointer', 1)
@@ -305,7 +309,7 @@ class CompilationEngine:
 
         self.assert_char(')')
         self.assert_char('{')
-        
+
         self.writer.write_label('IF_TRUE' + str(curr_if))
 
         self.compile_statements()
@@ -367,13 +371,13 @@ class CompilationEngine:
                     self.print_error("Constructor should return 'this'")
             self.compile_expression()
         elif curr_token != ';' and self.curr_subroutine[1] == 'void':
-            self.print_error('void subroutine ' + curr_subroutine[0] + ' \
-                             should not return any value.')
+            self.print_error('void subroutine ' + curr_subroutine[0] +  \
+                             ' should not return any value.')
         elif curr_token == ';' and self.curr_subroutine[1] == 'void':
             self.writer.write_push('constant', 0)
         else:
-            self.print_error('Function ' + curr_subroutine[0] + ' should \
-                             return a value.')
+            self.print_error('Function ' + self.curr_subroutine[0] + \
+                             ' should return a value.')
 
         self.writer.write_return();
         self.assert_char(';')
@@ -450,7 +454,7 @@ class CompilationEngine:
                 self.writer.write_arithmetic('not')
 
             return ret_val
-        
+
         # Check if bracketed expression
         if self.tokenizer.token.content == '(':
             self.tokenizer.advance()    # (
@@ -515,9 +519,9 @@ class CompilationEngine:
         self.assert_char('(')
         nargs += self.compile_expression_list()
         self.assert_char(')')
-        
+
         class_name = subroutine_name.split('.')[0]
-        
+
         if class_name == self.classname:
             if subroutine_name not in self.symtable.dec_functions:
                 self.print_error("Function or method " + subroutine_name + " doesn't exist")

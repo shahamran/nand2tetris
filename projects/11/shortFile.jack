@@ -1,22 +1,11 @@
 class shortFile {
-    function void foo() {
-        var int a;
-        let a = 0;
 
+    constructor shortFile new() {
+        var int me;
         if (true) {
-            let a = 1;
-            if (false) {
-                let a = 2;
-            } else {
-                let a = 3;
-            }
-        } else {
-            let a = 4;
-            if (true) {
-                let a = 5;
-            } else {
-                let a = 6;
-            }
+                return this;
         }
+        let me = "out";
+        return this;
     }
 }
