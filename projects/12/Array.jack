@@ -7,12 +7,17 @@
  * Represents an array. Can be used to hold any type of object.
  */
 class Array {
+    static int a;
 
     /** Constructs a new Array of the given size. */
     function Array new(int size) {
+        let a = Memory.alloc(size);
+        return a;
     }
 
     /** De-allocates the array and frees its space. */
     method void dispose() {
+        do Memory.deAlloc(a);
+        return;
     }
 }
