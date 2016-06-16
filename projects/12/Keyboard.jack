@@ -7,9 +7,14 @@
  * A library for handling user input from the keyboard.
  */
 class Keyboard {
+    static int KEYBOARD;
+    static int MAX_STRING;
 
     /** Initializes the keyboard. */
     function void init() {
+        let KEYBOARD = 24576;
+        let MAX_STRING = 80;
+        return;
     } 
 
     /**
@@ -33,6 +38,9 @@ class Keyboard {
      * F1 - F12 = 141 - 152
      */
     function char keyPressed() {
+        var char key;
+        let key = Memory.peek(KEYBOARD);
+        return key;
     }
 
     /**								
@@ -41,6 +49,19 @@ class Keyboard {
      * the key to the screen, and returns the value of the pressed key.
      */
     function char readChar() {
+        var char firstKey, key;
+        let firstKey = 0;
+        while (firstKey = 0) {
+            let firstKey = Keyboard.keyPressed();
+        }
+        let key = firstKey;
+        while (key = firstKey) {
+            let key = Keyboard.keyPressed();
+        }
+        if ((firstKey > 31) & (firstKey < 129)) {
+            do Output.printChar(firstKey);
+        }
+        return firstKey;
     }
 
     /**								
@@ -48,6 +69,28 @@ class Keyboard {
      * (until a newline character) from the keyboard, and returns its value.
      */
     function String readLine(String message) {
+        var char c;
+        var String s;
+
+        do Output.printString(message);
+        let s = String.new(MAX_STRING);
+        let c = 0;
+        while (~(c = String.newLine())) {
+            let c = Keyboard.readChar();
+            if (c = String.newLine()) {
+                return s;
+            }
+            if (c = String.backSpace()) {
+                if (~(s.length() = 0)) {
+                    do s.eraseLastChar();
+                    do Output.backSpace();
+                }
+            }
+            else {
+                do s.appendChar(c);
+            }
+        }
+        return s;
     }   
 
     /**								
@@ -56,5 +99,8 @@ class Keyboard {
      * integer value (until the first non numeric character).
      */
     function int readInt(String message) {
+        var String s;
+        let s = Keyboard.readLine(message);
+        return s.intValue();
     }
 }
