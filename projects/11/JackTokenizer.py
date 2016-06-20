@@ -148,8 +148,11 @@ class JackTokenizer:
         if is_comment:
             self.advance()
         else:
+            #self.token = Token(token_type,
+            #                   match_obj.group(2).encode('unicode-escape').decode())
             self.token = Token(token_type,
-                               match_obj.group(2).encode('unicode-escape').decode())
+                               match_obj.group(2))
+            #pdb.set_trace()
         return 
 
 
