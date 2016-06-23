@@ -7,15 +7,16 @@
  * Memory operations library.
  */ 
 class Memory {
-    static Array freeList;
-    static int len,next;
+    static Array freeList, base;
+    static int len, next;
 
     /** Initializes memory parameters. */
     function void init() {
+        let base = 0;
         let freeList = 2048;    // Heap base
         let len = 0;
         let next = 1;
-        let freeList[len] = 14436;  // Heap size
+        let freeList[len] = 14336;  // Heap size
         let freeList[next] = null;
         return;
     }
@@ -25,7 +26,7 @@ class Memory {
         if ((address < 0) | (address > 14436)) {
             return 0; // Error
         }
-        return freeList[address];
+        return base[address];
     }
 
     /** Sets the value of the main memory at this address
@@ -34,24 +35,37 @@ class Memory {
         if ((address < 0) | (address > 14436)) {
             return; // Error
         }
-        let freeList[address] = value;
+        let base[address] = value;
         return;
     }
 
-    function void swap(Array a, Array b) {
-        var Array tmpNext;
-        var int tmpLen;
+    function void printList() {
+        var Array curr;
+        let curr = freeList;
+        while (~(curr = null)) {
+            do Output.printString("-->");
+            do Output.printInt(curr);
+            let curr = curr[next];
+        }
+        do Keyboard.readChar();
+        return;
+    }
 
-        let tmpNext = b[next];
-        let tmpLen = b[len];
-        let b[len] = a[len];
-        let b[next] = a[next];
-        let a[len] = tmpLen;
-        let a[next] = tmpNext;
+    function void swap(Array curr, Array prev, Array prevprev) {
+        var Array tmpNext;
+
+        if (~(prevprev = null)) {
+            let prevprev[next] = curr;
+        }
+
+        let tmpNext = prev;
+        let prev[next] = curr[next];
+        let curr[next] = tmpNext;
+        return;
     }
 
     function void sort() {
-        var Array curr, prev, head;
+        var Array curr, prev, prevprev, head;
         var int i, n;
         var boolean swapped;
         
@@ -60,12 +74,14 @@ class Memory {
         }
 
         let swapped = true;
+        let prevprev = null;
         let prev = freeList;
         let curr = freeList[next];
         let head = freeList;
 
         let n = 1;
         while (~(curr = null)) {
+            let prevprev = prev;
             let prev = curr;
             let curr = curr[next];
             let n = n + 1;
@@ -73,20 +89,24 @@ class Memory {
         while (swapped) {
             let swapped = false;
             let i = 1;
+            let prevprev = null;
             let prev = head;
             let curr = prev[next];
 
             while (i < n) {
                 if (curr < prev) {
-                    let head = curr;
-                    do swap(curr, prev);
+                    if (i = 1) {
+                        let head = curr;
+                    }
+                    do Memory.swap(curr, prev, prevprev);
                     let swapped = true;
                 }
+                let prevprev = prev;
                 let prev = curr;
                 let curr = curr[next];
                 let i = i + 1;
             }
-            let n = n -1;
+            let n = n - 1;
         }
         let freeList = head;
         return;
@@ -95,10 +115,11 @@ class Memory {
     function void defrag() {
         var Array prev, curr;
 
-        do sort();
+        do Memory.sort();
         let prev = freeList;
         let curr = prev[next];
         while (~(curr = null)) {
+            //do Memory.printList();
             if ((prev + prev[len]) = curr) {
                 let prev[next] = curr[next];
                 let prev[len] = prev[len] + curr[len];
@@ -116,7 +137,6 @@ class Memory {
      *  specified size and returns a reference to its base address. */
     function int alloc(int size) {
         var Array segment, prev, oldNext, output;
-        var boolean flag;
         var int diff;
         
         if (size = 0) {
@@ -126,7 +146,6 @@ class Memory {
             return 0; // ERROR
         }
 
-        let flag = false;
         let prev = null;
         let segment = freeList;
 
@@ -155,15 +174,15 @@ class Memory {
             }
             let output = segment + 1;
         }
+        //do Memory.printList();
         return output;
     }
 
     /** De-allocates the given object and frees its space. */
     function void deAlloc(int object) {
-        var Array segment, curr, prev;
+        var Array segment, curr, prev, nextSeg;
 
         let curr = freeList;
-        let nextSeg = freeList[next];
         let segment = object - 1;
 
         if (freeList = null) {
@@ -172,13 +191,15 @@ class Memory {
             return;
         }
 
+        let nextSeg = freeList[next];
+
         while (~(nextSeg = null)) {
             let curr = nextSeg;
             let nextSeg = nextSeg[next];
         }
         let curr[next] = segment;
         let segment[next] = null;
-        do defrag();
+        do Memory.defrag();
         return;
     }    
 }
