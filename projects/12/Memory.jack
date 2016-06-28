@@ -23,7 +23,7 @@ class Memory {
 
     /** Returns the value of the main memory at the given address. */
     function int peek(int address) {
-        if ((address < 0) | (address > 14436)) {
+        if ((address < 0) | (address > 24576)) {
             return 0; // Error
         }
         return base[address];
@@ -32,7 +32,7 @@ class Memory {
     /** Sets the value of the main memory at this address
      *  to the given value. */
     function void poke(int address, int value) {
-        if ((address < 0) | (address > 14436)) {
+        if ((address < 0) | (address > 24576)) {
             return; // Error
         }
         let base[address] = value;
