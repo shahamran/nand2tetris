@@ -103,26 +103,30 @@ class Math {
     function int sqrt(int x) {
         var int y, j, two2j, z;
 		let y = 0;
-		let j = 8;
+        let z = 0;
+		let j = 7;
 		let two2j = 128;
-		while (j > 0) {
-			let z = y + two2j;
-			if ((z * z) < x) {
-				let y = z;
-			}
-			if ((y * y) = x) {
-				return y;
-			}
+		while (j > -1) {
+            if ((y + two2j) < 182) {
+                let z = y + two2j;
+               if (((z * z) - 1) < x) {
+                    let y = z;
+                }
+                if ((y * y) = x) {
+                    return y;
+                }
+            }
 			let two2j = two2j / 2;
 			let j = j - 1;
 		}
 		return y;
 	}
-        /* let low = 0;
+        /*var int low, high, mid, mid2;
+        let low = 0;
         let high = 181;
-		let midd = (high + low) / 2;
+		let mid = (high + low) / 2;
 		let mid2 = mid * mid;
-        while (low < (high - 1)) {
+        while ((high - low) > 1) {
             if (mid2 = x) {
                 return mid;
             }
@@ -135,7 +139,7 @@ class Math {
 			let mid = (low + high) / 2;
 			let mid2 = mid * mid;
         }
-        return high;
+        return low;
     } */
 
     /** Returns the greater number. */
