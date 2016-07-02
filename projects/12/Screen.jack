@@ -51,7 +51,7 @@ class Screen {
     function void drawPixel(int x, int y) {
         var int offset, xmod16, pixel, currWord;
         let offset = SCREEN + ((y * 32) + (x / 16));
-        let xmod16 = x - ((x / 16) * 16);
+        let xmod16 = x & 15;
         let pixel = bits[xmod16];
         let currWord = Memory.peek(offset);
         if (color) {
@@ -92,7 +92,7 @@ class Screen {
 			}
 			while (x1 < (x2 + 1)) {
 				let offset = SCREEN + ((y1 * 32) + (x1 / 16));
-				if (((x1 - ((x1 / 16) * 16)) = 0) & ((x1 + 15) < x2)) {
+				if (((x1 & 15) = 0) & ((x1 + 15) < x2)) {
 					do Memory.poke(offset, color);
 					let x1 = x1 + 16;
 				}
