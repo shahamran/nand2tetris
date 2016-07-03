@@ -23,23 +23,17 @@ class Memory {
 
     /** Returns the value of the main memory at the given address. */
     function int peek(int address) {
-        if ((address < 0) | (address > 24576)) {
-            return 0; // Error
-        }
         return base[address];
     }
 
     /** Sets the value of the main memory at this address
      *  to the given value. */
     function void poke(int address, int value) {
-        if ((address < 0) | (address > 24576)) {
-            return; // Error
-        }
         let base[address] = value;
         return;
     }
 
-    function void printList() {
+    /*function void printList() {
         var Array curr;
         let curr = freeList;
         while (~(curr = null)) {
@@ -49,8 +43,9 @@ class Memory {
         }
         do Keyboard.readChar();
         return;
-    }
+    }*/
 
+    /** Swaps two entries in the freeList data structure */
     function void swap(Array curr, Array prev, Array prevprev) {
         var Array tmpNext;
 
@@ -63,7 +58,8 @@ class Memory {
         let curr[next] = tmpNext;
         return;
     }
-
+    
+    /** Sorts the freeList data structure */
     function void sort() {
         var Array curr, prev, prevprev, head;
         var int i, n;
@@ -112,6 +108,7 @@ class Memory {
         return;
     }
 
+    /** Performs defragmentation */
     function void defrag() {
         var Array prev, curr;
 
@@ -139,11 +136,14 @@ class Memory {
         var Array segment, prev, oldNext, output;
         var int diff;
         
+        if (size < 0) {
+            do Sys.error(5);
+        }
         if (size = 0) {
-            return freeList + 10019;
+            return freeList + 10019; // ???
         }
         if (freeList = null) {
-            return 0; // ERROR
+            do Sys.error(6);
         }
 
         let prev = null;
@@ -153,7 +153,7 @@ class Memory {
             let prev = segment;
             let segment = segment[next];
             if ((segment = null)) {
-                return 0; // ERRROR
+                do Sys.error(6);
             }
         }
         // This is reached when a free block was found
