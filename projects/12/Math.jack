@@ -121,27 +121,7 @@ class Math {
 		}
 		return y;
 	}
-        /*var int low, high, mid, mid2;
-        let low = 0;
-        let high = 181;
-		let mid = (high + low) / 2;
-		let mid2 = mid * mid;
-        while ((high - low) > 1) {
-            if (mid2 = x) {
-                return mid;
-            }
-            if (mid2 < x) {
-                let low = mid;
-            }
-            else {
-                let high = mid;
-            }
-			let mid = (low + high) / 2;
-			let mid2 = mid * mid;
-        }
-        return low;
-    } */
-
+     
     /** Returns the greater number. */
     function int max(int a, int b) {
         var int x;
