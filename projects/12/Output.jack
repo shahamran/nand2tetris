@@ -14,7 +14,7 @@ class Output {
 
     // Character map for printing on the left of a screen word
     static Array charMaps;
-    static int row, col, MAX_ROW, MAX_COL;
+    static int row, col, MAX_ROW, MAX_COL, SCREEN;
 
     /** Initializes the screen and locates the cursor at the screen's top-left. */
     function void init() {
@@ -22,6 +22,7 @@ class Output {
         let col = 0;
         let MAX_ROW = 23;
         let MAX_COL = 64;
+        let SCREEN = 16384;
         do Output.initMap();
         return;
     }
@@ -72,7 +73,7 @@ class Output {
         do Output.create(64,30,51,51,59,59,59,27,3,30,0,0);  // @
         do Output.create(63,30,51,51,24,12,12,0,12,12,0,0);  // ?
 
-        do Output.create(65,12,30,51,51,63,51,51,51,0,0);    // A ** TO BE FILLED **
+        do Output.create(65,12,30,51,51,63,51,51,51,51,0,0); // A ** TO BE FILLED **
         do Output.create(66,31,51,51,51,31,51,51,51,31,0,0); // B
         do Output.create(67,28,54,35,3,3,3,35,54,28,0,0);    // C
         do Output.create(68,15,27,51,51,51,51,51,27,15,0,0); // D
@@ -179,41 +180,123 @@ class Output {
      *  and erases the character that was there. */
     function void moveCursor(int i, int j) {
         if ((i < 0) | (i > (MAX_ROW-1)) | (j < 0) | (j > (MAX_COL-1))) {
-            return;
+            return; // ERROR
         }
         let row = i;
         let col = j;
-        do Output.printChar(32);
+        do Output.drawChar(32);
         return;
     }
 
-    function int shiftChar() {
-        return num * 256;
+    function void drawChar(char c) {
+        var Array map;
+        var int address, charRow, currWord, mask, shift;
+        var boolean firstInWord;
+
+        let map = Output.getMap(c);
+        let address = SCREEN + ((row * 352) + (col / 2)); // 32 * 11 = 352
+        if ((col & 1) = 0) {
+            let firstInWord = true;
+        }
+        else {
+            let firstInWord = false;
+        }
+
+        let mask = 255;             // 0000000011111111
+        let shift = 256;
+        if (firstInWord) {
+            let mask = -256;  // mask (shift 8)
+            let shift = 1;
+        }
+        let charRow = 0;
+        while (charRow < 11) {
+            let currWord = Memory.peek(address);
+            let currWord = (currWord & mask) | (map[charRow] * shift);
+            do Memory.poke(address, currWord);
+            let address = address + 32;
+            let charRow = charRow + 1;
+        }
+
+        return;
+        
+    }
+
+    function void incCursor() {
+        let col = col + 1;
+        if (col > (MAX_COL - 1)) {
+            let col = 0;
+            let row = row + 1;
+        }
+        if (row > (MAX_ROW - 1)) {
+            let row = 0;
+        }
+        return;
     }
 
     /** Prints c at the cursor location and advances the cursor one
      *  column forward. */
     function void printChar(char c) {
         var Array map;
-        let map = getMap(c);
-        do 
+        var int address, charRow, currWord, mask, shift, firstInWord;
+
+        // print new line
+        if (c = String.newLine()) {
+            do Output.println();
+            return;
+        }
+        // print backspace
+        if (c = String.backSpace()) {
+            do Output.backSpace();
+            return;
+        }
+        
+        do Output.drawChar(c);
+
+        do Output.incCursor();
+        return;
     }
 
     /** Prints s starting at the cursor location, and advances the
      *  cursor appropriately. */
     function void printString(String s) {
+        var int i, n;
+        let i = 0;
+        let n = s.length();
+        while (i < n) {
+            do Output.printChar(s.charAt(i));
+            let i = i + 1;
+        }
+        return;
     }
 
     /** Prints i starting at the cursor location, and advances the
      *  cursor appropriately. */
     function void printInt(int i) {
+        var String s;
+
+        let s = String.new(10);
+        do s.setInt(i);
+        do Output.printString(s);
+        
+        return;
     }
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
+        let col = 0;
+        let row = row + 1;
+        if (row > (MAX_ROW-1)) {
+            let row = 0;
+        }
+        return;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        if (col = 0) {
+            return;
+        }
+        do Output.moveCursor(row, col-1);
+        return;
     }
 }
