@@ -35,7 +35,7 @@ compile:
 
 clean:
 	@echo Removing test files...
-	@find . -mindepth 2 -name "*$(JACK_EXT)" ! -name "Main.jack" -print -delete
+	@find . -mindepth 2 -maxdepth 2 -name "*$(JACK_EXT)" ! -name "Main.jack" -print -delete
 	@echo Removing vm files...
 	@find . -name "*.vm" -print -delete
 
