@@ -5,6 +5,7 @@ all:
 	@echo "Done."
 
 JACK_EXT=.jack
+JACK_COMPILER=../../tools/JackCompiler.sh
 TAR_FILES=README Makefile *$(JACK_EXT)
 TAR_FLAGS=-cvf
 TAR_NAME=project12.tar
@@ -23,6 +24,12 @@ links:
 		f_dir=$$f_clean$(TEST_DIR); \
 		$(LINK) $$f $$f_dir$$f || break; \
 		echo Created link: $$f_dir$$f; \
+	done
+
+compile: 
+	@echo Compiling test directories...
+	@for d in *$(TEST_DIR); do \
+		$(JACK_COMPILER) $$d; \
 	done
 
 
