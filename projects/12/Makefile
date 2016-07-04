@@ -11,6 +11,7 @@ tar:
 	$(TAR) $(TAR_FLAGS) $(TAR_NAME) $(TAR_FILES)
 
 clean:
-	rm -fv *.vm
+	find . -mindepth 2 -name "*.jack" ! -name "Main.jack" -delete
+	find . -name "*.vm" -delete
 
 .PHONY: all tar clean
