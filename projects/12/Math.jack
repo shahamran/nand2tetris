@@ -62,44 +62,39 @@ class Math {
 
     /** Returns the integer part of x/y. */
     function int divide(int x, int y) {
-        var int q, qy, sign;
+        var int q, qy;
+        // Check for division by zero
         if (y = 0) {
             do Sys.error(3);
             return -1;
         }
-        let sign = 1;
-        if ((x > 0) & (y > 0)) {
-            let sign = 1;
-        }
-        else {
-            if ((x < 0) & (y > 0)) {
-                let sign = -1;
-                let x = -x;
+        // Check for negative numbers
+        if ((x < 0) | (y < 0)) {
+            if (~((x < 0) & (y < 0))) {
+                // Only one is negative
+                return -Math.divide(Math.abs(x), Math.abs(y));
             }
             else {
-                if ((x > 0) & (y < 0)) {
-                    let sign = -1;
-                    let y = -y;
-                }
-                else {
-                    let x = -x;
-                    let y = -y;
-                }
+                // This means both are negative.
+                let x = Math.abs(x);
+                let y = Math.abs(y);
             }
         }
+        // Special Cases
         if (y = 1) {
-            return sign * x;
+            return x;
         }
         if (y > x) {
             return 0;
         }
+        // The division...
         let q = Math.divide(x, y + y);
         let qy = Math.multiply(q, y);
         if ((x - (qy + qy)) < y) {
-            return Math.multiply(sign, (q + q));
+            return (q + q);
         }
         else {
-            return Math.multiply(sign, (q + q + 1));
+            return (q + q + 1);
         }
     }
 
