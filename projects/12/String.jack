@@ -48,7 +48,7 @@ class String {
 
     /** Sets the j'th character of this string to be c. */
     method void setCharAt(int j, char c) {
-        if ((j < 0) | (j > (size-1))) {
+        if ((j < 0) | (j > (maxSize-1))) {
             do Sys.error(16);
             return;
         }
