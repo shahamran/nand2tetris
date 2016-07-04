@@ -21,6 +21,14 @@ class Math {
         return x;
     }
 
+    function int shiftLeft(int x, int shift) {
+        while (shift > 0) {
+            let x = x + x;
+            let shift = shift - 1;
+        }
+        return x;
+    }
+
     /** Returns the product of x and y. */
     function int multiply(int x, int y) {
         var int sum, shift, i, j;
@@ -45,6 +53,31 @@ class Math {
         }
         if ((x = 0) | (y = 0)) {
             return 0;
+        }
+        // Powers of two:
+        if (y = 2) {
+            return x + x;
+        }
+        if (y = 4) {
+            return (x + x) + (x + x);
+        }
+        if (y = 8) {
+            return Math.shiftLeft(x, 3);
+        }
+        if (y = 16) {
+            return Math.shiftLeft(x, 4);
+        }
+        if (y = 32) {
+            return Math.shiftLeft(x, 5);
+        }
+        if (y = 64) {
+            return Math.shiftLeft(x, 6);
+        }
+        if (y = 128) {
+            return Math.shiftLeft(x, 7);
+        }
+        if (y = 256) {
+            return Math.shiftLeft(x, 8);
         }
         let sum = 0;
         let shift = x;
