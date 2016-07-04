@@ -1,0 +1,447 @@
+function Math.init 0
+push constant 0
+return
+function Math.abs 0
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
+neg
+pop argument 0
+label IF_FALSE0
+push argument 0
+return
+function Math.shiftLeft 0
+label WHILE_EXP0
+push argument 1
+push constant 0
+gt
+not
+if-goto WHILE_END0
+push argument 0
+push argument 0
+add
+pop argument 0
+push argument 1
+push constant 1
+sub
+pop argument 1
+goto WHILE_EXP0
+label WHILE_END0
+push argument 0
+return
+function Math.multiply 4
+push argument 0
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+return
+goto IF_END0
+label IF_FALSE0
+push argument 1
+push constant 1
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push argument 0
+return
+goto IF_END1
+label IF_FALSE1
+push argument 0
+push constant 1
+neg
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push argument 1
+neg
+return
+goto IF_END2
+label IF_FALSE2
+push argument 1
+push constant 1
+neg
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push argument 0
+neg
+return
+label IF_FALSE3
+label IF_END2
+label IF_END1
+label IF_END0
+push argument 0
+push constant 0
+eq
+push argument 1
+push constant 0
+eq
+or
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 0
+return
+label IF_FALSE4
+push argument 1
+push constant 2
+eq
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push argument 0
+push argument 0
+add
+return
+label IF_FALSE5
+push argument 1
+push constant 4
+eq
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push argument 0
+push argument 0
+add
+push argument 0
+push argument 0
+add
+add
+return
+label IF_FALSE6
+push argument 1
+push constant 8
+eq
+if-goto IF_TRUE7
+goto IF_FALSE7
+label IF_TRUE7
+push argument 0
+push constant 3
+call Math.shiftLeft 2
+return
+label IF_FALSE7
+push argument 1
+push constant 16
+eq
+if-goto IF_TRUE8
+goto IF_FALSE8
+label IF_TRUE8
+push argument 0
+push constant 4
+call Math.shiftLeft 2
+return
+label IF_FALSE8
+push argument 1
+push constant 32
+eq
+if-goto IF_TRUE9
+goto IF_FALSE9
+label IF_TRUE9
+push argument 0
+push constant 5
+call Math.shiftLeft 2
+return
+label IF_FALSE9
+push argument 1
+push constant 64
+eq
+if-goto IF_TRUE10
+goto IF_FALSE10
+label IF_TRUE10
+push argument 0
+push constant 6
+call Math.shiftLeft 2
+return
+label IF_FALSE10
+push argument 1
+push constant 128
+eq
+if-goto IF_TRUE11
+goto IF_FALSE11
+label IF_TRUE11
+push argument 0
+push constant 7
+call Math.shiftLeft 2
+return
+label IF_FALSE11
+push argument 1
+push constant 256
+eq
+if-goto IF_TRUE12
+goto IF_FALSE12
+label IF_TRUE12
+push argument 0
+push constant 8
+call Math.shiftLeft 2
+return
+label IF_FALSE12
+push constant 0
+pop local 0
+push argument 0
+pop local 1
+push constant 0
+pop local 2
+push constant 1
+pop local 3
+label WHILE_EXP0
+push local 2
+push constant 16
+lt
+not
+if-goto WHILE_END0
+push local 3
+push argument 1
+and
+push constant 0
+eq
+not
+if-goto IF_TRUE13
+goto IF_FALSE13
+label IF_TRUE13
+push local 0
+push local 1
+add
+pop local 0
+label IF_FALSE13
+push local 1
+push local 1
+add
+pop local 1
+push local 3
+push local 3
+add
+pop local 3
+push local 2
+push constant 1
+add
+pop local 2
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function Math.divide 2
+push argument 1
+push constant 0
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 3
+call Sys.error 1
+pop temp 0
+push constant 1
+neg
+return
+label IF_FALSE0
+push argument 0
+push constant 0
+lt
+push argument 1
+push constant 0
+lt
+or
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push argument 0
+push constant 0
+lt
+push argument 1
+push constant 0
+lt
+and
+not
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push argument 0
+call Math.abs 1
+push argument 1
+call Math.abs 1
+call Math.divide 2
+neg
+return
+goto IF_END2
+label IF_FALSE2
+push argument 0
+call Math.abs 1
+pop argument 0
+push argument 1
+call Math.abs 1
+pop argument 1
+label IF_END2
+label IF_FALSE1
+push argument 1
+push constant 1
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push argument 0
+return
+label IF_FALSE3
+push argument 1
+push argument 0
+gt
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 0
+return
+label IF_FALSE4
+push argument 1
+push argument 1
+add
+push constant 0
+lt
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push constant 0
+pop local 0
+goto IF_END5
+label IF_FALSE5
+push argument 0
+push argument 1
+push argument 1
+add
+call Math.divide 2
+pop local 0
+label IF_END5
+push local 0
+push argument 1
+call Math.multiply 2
+pop local 1
+push argument 0
+push local 1
+push local 1
+add
+sub
+push argument 1
+lt
+if-goto IF_TRUE6
+goto IF_FALSE6
+label IF_TRUE6
+push local 0
+push local 0
+add
+return
+goto IF_END6
+label IF_FALSE6
+push local 0
+push local 0
+add
+push constant 1
+add
+return
+label IF_END6
+function Math.sqrt 4
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 4
+call Sys.error 1
+pop temp 0
+push constant 1
+neg
+return
+label IF_FALSE0
+push constant 0
+pop local 0
+push constant 0
+pop local 3
+push constant 7
+pop local 1
+push constant 128
+pop local 2
+label WHILE_EXP0
+push local 1
+push constant 1
+neg
+gt
+not
+if-goto WHILE_END0
+push local 0
+push local 2
+add
+push constant 182
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push local 0
+push local 2
+add
+pop local 3
+push local 3
+push local 3
+call Math.multiply 2
+push constant 1
+sub
+push argument 0
+lt
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push local 3
+pop local 0
+label IF_FALSE2
+push local 0
+push local 0
+call Math.multiply 2
+push argument 0
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push local 0
+return
+label IF_FALSE3
+label IF_FALSE1
+push local 2
+push constant 2
+call Math.divide 2
+pop local 2
+push local 1
+push constant 1
+sub
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push local 0
+return
+function Math.max 1
+push argument 0
+pop local 0
+push argument 1
+push argument 0
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 1
+pop local 0
+label IF_FALSE0
+push local 0
+return
+function Math.min 0
+push argument 0
+neg
+push argument 1
+neg
+call Math.max 2
+neg
+return

@@ -1,0 +1,154 @@
+/**
+ * Implements the iCopter game.
+ * TODO
+ */
+class iCopter {
+
+    // The copter
+    field Copter copter;
+
+    // The obstacle
+    field Gate gate;
+
+    // GameOver (yes/no)
+    field boolean gameOver;
+
+    // jumpCountdown, highScores, speed, gateHeight
+    field int jumpCounter, highScore, speed, newGateHeight;
+
+    /** Constructs a new Copter Game. */
+    constructor iCopter new() {
+        let gameOver = false;
+        let speed = 3;
+        let jumpCounter = 0;
+        let highScore = 0;
+	let newGateHeight = 0;
+        let copter = Copter.new(20, 100, 10);
+        let gate = Gate.new(100, 10, 50, speed);
+
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do copter.dispose();
+        do gate.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Check if the copter object overlaps with the gate object */
+    method boolean checkClash() {
+        var int copX, copY, copSize, gatePos, gateHeight, gateGap;
+	// Get objects' positions
+        let copX = copter.getX();
+        let copY = copter.getY();
+        let copSize = copter.getSize();
+        let gatePos = gate.getPos();
+        let gateHeight = gate.getHeight();
+        let gateGap = gate.getGap();
+	// Check for overlapping
+        if (((copX + copSize) > gatePos) & (copX < gatePos)) {
+            if ((copY < gateHeight) | ((copY + copSize) > (gateHeight + gateGap))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** Display highscores and gameover message */
+    method void displayGameOver() {
+        do Screen.clearScreen();
+        do Output.moveCursor(3, 10);
+        do Output.printString("Game Over!");
+	do Output.moveCursor(4,10);
+        //do Output.println();
+        do Output.printString("Your score is: ");
+        do Output.printInt(highScore);
+        do Output.printString("  !!!!!");
+
+	return;	
+    }
+
+    /** Starts the game. Handles inputs from the user that control
+     *  the copter's movement */
+    method void run() {
+        var char key;
+
+        while (~gameOver) {
+            // waits for a key to be pressed.
+            while ((key = 0) & ~gameOver) {
+                let key = Keyboard.keyPressed();
+		do updateGateHeight();
+                do moveCopter();
+            }
+
+            if (key = 81) {             // 'q' key
+                let gameOver = true;
+            }
+            if (key = 32) {             // '<Space>' key
+                let jumpCounter = 10;
+            }
+            if (key = 80) {
+                // Pause
+            }
+
+            // waits for the key to be released.
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                do moveCopter();
+            }
+        }
+	
+	do displayGameOver();
+
+        return;
+	}
+
+    /** Increments the gate height and make sure it is in screen bounds */
+    method void updateGateHeight() {
+	let newGateHeight = newGateHeight + 11;
+	if ((newGateHeight + gate.getGap()) > 255) {
+	    let newGateHeight = newGateHeight - (255 - gate.getGap());
+	}
+	return;
+    }
+
+    /** Moves the 'copter' towards the gate (not really) */
+    method void moveCopter() {
+        var boolean gateInScreen, copterInScreen;
+        
+        if (gameOver) {
+            return;
+        }
+	// Check if the player hit the gate
+        if (checkClash()) {
+            let gameOver = true;
+            return;
+        }
+	// Check if the copter needs to jump
+        if (jumpCounter > 0) {
+            let jumpCounter = jumpCounter - 1;
+            do copter.setJump();
+        }
+	// Move the copter and check if it hits the floor or ceiling
+        do copter.move();
+        let copterInScreen = copter.isInScreen();
+        if (~copterInScreen) {
+            let gameOver = true;
+            return;
+        }
+	// Move the gate towards the copter
+        let gateInScreen = gate.move();
+        if (~gateInScreen) {
+            let speed = speed + 1;
+            do gate.dispose();
+            let gate = Gate.new(newGateHeight, 10, 50, speed);
+            let highScore = highScore + 1;
+        }
+
+        do Sys.wait(1); // Delays the next movement.
+        return;
+    }
+}

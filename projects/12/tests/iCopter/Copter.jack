@@ -1,0 +1,115 @@
+/**
+ * Implements a graphic heli-copter. A graphic helicopter is a square that
+ * has a screen location and a size. It also has methods for drawing, erasing, 
+ * jumping and falling.
+ */
+class Copter {
+
+    // Location on the screen
+    field int x, y;
+
+    // The size of the copter
+    field int size;
+
+    // The copter is in the screen's borders or not
+    field boolean inScreen;
+
+    field boolean doJump;
+
+    /** Constructs a new copter with a given location and size. */
+    constructor Copter new(int Ax, int Ay, int Asize) {
+        let x = Ax;
+        let y = Ay;
+        let size = Asize;
+        let inScreen = true;
+        let doJump = false;
+
+        do draw();
+
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Draws the copter on the screen. */
+    method void draw() {
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    /** Erases the copter from the screen. */
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    method void setJump() {
+        let doJump = true;
+        return;
+    }
+
+    /** Moves the copter up by ? pixels. */
+    method void jump() {
+        if (y > 6) {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x + size, y + size);
+            let y = y - 6;
+            do Screen.setColor(true);
+            do Screen.drawRectangle(x, y, x + size, y + size);
+        } 
+        else {
+            let inScreen = false;
+        }
+        return;
+    }
+
+    /** Moves down by 2 pixels. */
+    method void move() {
+        if (doJump) {
+            do jump();
+            let doJump = false;
+        }
+        else {
+            if ((y + size) < 254) {
+		do erase();
+                //do Screen.setColor(false);
+                //do Screen.drawRectangle(x, y, x + size, y + 1);
+                let y = y + 3;
+		do draw();
+                //do Screen.setColor(true);
+                //do Screen.drawRectangle(x, (y + size) - 1, x + size, y + size);
+            }
+            else {
+                let inScreen = false;
+            }
+        }
+        return;
+    }
+
+    /** Returns the x location of the copter */
+    method int getX() {
+        return x;
+    }
+
+    /** Returns the y location of the copter */
+    method int getY() {
+        return y;
+    }
+
+    /** Returns the size of the copter */
+    method int getSize() {
+        return size;
+    }
+    
+    /** Returns true if the copter is in the screen and false otherwise */
+    method boolean isInScreen() {
+        return inScreen;
+    }
+
+}

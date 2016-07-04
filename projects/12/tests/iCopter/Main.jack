@@ -1,0 +1,17 @@
+/**
+ * The Main class initializes a new iCopter game and starts it.
+ */
+class Main {
+
+    /** Initializes a new game and starts it. */    
+    function void main() {
+        var iCopter game;
+
+        let game = iCopter.new();
+        do game.run();
+	do Sys.wait(10); // Wait for drawings to finish before deallocating
+        do game.dispose();
+
+        return;
+    }
+}

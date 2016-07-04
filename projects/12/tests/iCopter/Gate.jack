@@ -1,0 +1,49 @@
+class Gate {
+    field int height, width, gap, pos, speed;
+    
+    
+    constructor Gate new(int newHeight, int newWidth, int newGap, int newSpeed){
+        let height = newHeight;
+        let width = newWidth;
+        let gap = newGap;
+        let speed = newSpeed;
+        let pos = 511 - width;
+        do draw();
+        return this;
+    }
+    
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+    
+    method void draw() {
+        do Screen.drawRectangle(pos, 0, (pos + width), height);
+        do Screen.drawRectangle(pos, (height + gap), (pos + width), 255);
+        return;
+    }
+    
+    method boolean move() {
+         do Screen.setColor(false);
+         do draw();
+         if ((pos - speed) > 0) {
+            do Screen.setColor(true);
+            let pos = pos - speed;
+            do draw();
+            return true;
+        }
+        return false;
+    }
+    
+    method int getHeight() {
+        return height;
+    }
+    
+    method int getPos() {
+        return pos;
+    }
+    
+    method int getGap() {
+        return gap;
+    }
+}
