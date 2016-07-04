@@ -24,6 +24,7 @@ class Math {
     /** Returns the product of x and y. */
     function int multiply(int x, int y) {
         var int sum, shift, i, j;
+        // Special Cases
         if (x = 1) {
             return y;
         }
@@ -87,8 +88,14 @@ class Math {
         if (y > x) {
             return 0;
         }
-        // The division...
-        let q = Math.divide(x, y + y);
+        
+        if ((y + y) < 0) {
+            // Overflow..
+            let q = 0;
+        }
+        else {
+            let q = Math.divide(x, y + y);
+        }
         let qy = Math.multiply(q, y);
         if ((x - (qy + qy)) < y) {
             return (q + q);
