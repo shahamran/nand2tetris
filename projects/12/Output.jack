@@ -180,7 +180,8 @@ class Output {
      *  and erases the character that was there. */
     function void moveCursor(int i, int j) {
         if ((i < 0) | (i > (MAX_ROW-1)) | (j < 0) | (j > (MAX_COL-1))) {
-            return; // ERROR
+            do Sys.error(20);
+            return; 
         }
         let row = i;
         let col = j;

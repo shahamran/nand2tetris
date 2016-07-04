@@ -33,18 +33,6 @@ class Memory {
         return;
     }
 
-    /*function void printList() {
-        var Array curr;
-        let curr = freeList;
-        while (~(curr = null)) {
-            do Output.printString("-->");
-            do Output.printInt(curr);
-            let curr = curr[next];
-        }
-        do Keyboard.readChar();
-        return;
-    }*/
-
     /** Swaps two entries in the freeList data structure */
     function void swap(Array curr, Array prev, Array prevprev) {
         var Array tmpNext;
@@ -136,14 +124,11 @@ class Memory {
         var Array segment, prev, oldNext, output;
         var int diff;
         
-        if (size < 0) {
+        if (size < 1) {
             do Sys.error(5);
         }
-        if (size = 0) {
-            return freeList + 10019; // ???
-        }
         if (freeList = null) {
-            do Sys.error(6);
+            do Sys.error(6); // Heap overflow
         }
 
         let prev = null;
@@ -153,7 +138,7 @@ class Memory {
             let prev = segment;
             let segment = segment[next];
             if ((segment = null)) {
-                do Sys.error(6);
+                do Sys.error(6); // Even fragmentation didn't help!
             }
         }
         // This is reached when a free block was found

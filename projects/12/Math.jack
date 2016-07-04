@@ -63,6 +63,10 @@ class Math {
     /** Returns the integer part of x/y. */
     function int divide(int x, int y) {
         var int q, qy, sign;
+        if (y = 0) {
+            do Sys.error(3);
+            return -1;
+        }
         let sign = 1;
         if ((x > 0) & (y > 0)) {
             let sign = 1;
@@ -102,6 +106,10 @@ class Math {
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
         var int y, j, two2j, z;
+        if (x < 0) {
+            do Sys.error(4);
+            return -1;
+        }
 		let y = 0;
         let z = 0;
 		let j = 7;
