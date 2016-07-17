@@ -29,12 +29,13 @@ class String {
         if (maxSize > 0) {
             do charsArr.dispose();
         }
+        do Memory.deAlloc(this);
         return;
     }
 
     /** Returns the current length of this String. */
     method int length() {
-        return size;        
+        return size;
     }
 
     /** Returns the character at location j. */
@@ -48,7 +49,7 @@ class String {
 
     /** Sets the j'th character of this string to be c. */
     method void setCharAt(int j, char c) {
-        if ((j < 0) | (j > (maxSize-1))) {
+        if ((j < 0) | (j > (size-1))) {
             do Sys.error(16);
             return;
         }
@@ -63,8 +64,8 @@ class String {
             do Sys.error(17);
             return null;
         }
-        do setCharAt(size, c);
         let size = size + 1;
+        do setCharAt(size-1, c);
         return this;
     }
 
@@ -109,7 +110,7 @@ class String {
         if (isNeg) {
             let result = -result;
         }
-        
+
         return result;
     }
 
@@ -123,7 +124,8 @@ class String {
                 do Sys.error(19);
                 return;
             }
-            let charsArr[0] = 48;
+            let charsArr[0] = 48; // 0
+            let size = 1;
             return;
         }
         if (number < 0) {
