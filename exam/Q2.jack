@@ -1,0 +1,13 @@
+class Q2 {
+    field int x;
+    method void diff(int y) {
+        var boolean z;
+        let z = x > y;
+        if (z) {
+            let x = x - y;
+        } else {
+            let x = y - x;
+        }
+        return;
+    }
+}

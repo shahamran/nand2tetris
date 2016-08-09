@@ -1,0 +1,190 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * Memory operations library.
+ */ 
+class Memory {
+    static Array freeList, base;
+    static int len, next;
+
+    /** Initializes memory parameters. */
+    function void init() {
+        let base = 0;
+        let freeList = 2048;    // Heap base
+        let len = 0;
+        let next = 1;
+        let freeList[len] = 14336;  // Heap size
+        let freeList[next] = null;
+        return;
+    }
+
+    /** Returns the value of the main memory at the given address. */
+    function int peek(int address) {
+        return base[address];
+    }
+
+    /** Sets the value of the main memory at this address
+     *  to the given value. */
+    function void poke(int address, int value) {
+        let base[address] = value;
+        return;
+    }
+
+    /** Swaps two entries in the freeList data structure */
+    function void swap(Array curr, Array prev, Array prevprev) {
+        var Array tmpNext;
+
+        if (~(prevprev = null)) {
+            let prevprev[next] = curr;
+        }
+
+        let tmpNext = prev;
+        let prev[next] = curr[next];
+        let curr[next] = tmpNext;
+        return;
+    }
+    
+    /** Sorts the freeList data structure */
+    function void sort() {
+        var Array curr, prev, prevprev, head;
+        var int i, n;
+        var boolean swapped;
+        
+        if (freeList = null) {
+            return;
+        }
+
+        let swapped = true;
+        let prevprev = null;
+        let prev = freeList;
+        let curr = freeList[next];
+        let head = freeList;
+
+        let n = 1;
+        while (~(curr = null)) {
+            let prevprev = prev;
+            let prev = curr;
+            let curr = curr[next];
+            let n = n + 1;
+        }
+        while (swapped) {
+            let swapped = false;
+            let i = 1;
+            let prevprev = null;
+            let prev = head;
+            let curr = prev[next];
+
+            while (i < n) {
+                if (curr < prev) {
+                    if (i = 1) {
+                        let head = curr;
+                    }
+                    do Memory.swap(curr, prev, prevprev);
+                    let swapped = true;
+                }
+                let prevprev = prev;
+                let prev = curr;
+                let curr = curr[next];
+                let i = i + 1;
+            }
+            let n = n - 1;
+        }
+        let freeList = head;
+        return;
+    }
+
+    /** Performs defragmentation */
+    function void defrag() {
+        var Array prev, curr;
+
+        do Memory.sort();
+        let prev = freeList;
+        let curr = prev[next];
+        while (~(curr = null)) {
+            //do Memory.printList();
+            if ((prev + prev[len]) = curr) {
+                let prev[next] = curr[next];
+                let prev[len] = prev[len] + curr[len];
+                let curr = curr[next];
+            }
+            else {
+                let prev = curr;
+                let curr = curr[next];
+            }
+        }
+        return;
+    }
+
+    /** finds and allocates from the heap a memory block of the 
+     *  specified size and returns a reference to its base address. */
+    function int alloc(int size) {
+        var Array segment, prev, oldNext, output;
+        var int diff;
+        
+        if (size < 1) {
+            do Sys.error(5);
+        }
+        if (freeList = null) {
+            do Sys.error(6); // Heap overflow
+        }
+
+        let prev = null;
+        let segment = freeList;
+
+        while ((size + 1) > segment[len]) {
+            let prev = segment;
+            let segment = segment[next];
+            if ((segment = null)) {
+                do Sys.error(6); // Even fragmentation didn't help!
+            }
+        }
+        // This is reached when a free block was found
+        let diff = segment[len] - size; // diff >= 1
+        // If the found segment is large enough to fit more than
+        // the required block, divide it to two blocks.
+        if (diff > 3) {
+            let output = segment + diff;
+            let output[-1] = size + 1;
+            let segment[len] = diff - 1;
+        }
+        else {
+            if (prev = null) {
+                let freeList = segment[next];
+            }
+            else {
+                let prev[next] = segment[next];
+            }
+            let output = segment + 1;
+        }
+        //do Memory.printList();
+        return output;
+    }
+
+    /** De-allocates the given object and frees its space. */
+    function void deAlloc(int object) {
+        var Array segment, curr, prev, nextSeg;
+
+        let curr = freeList;
+        let segment = object - 1;
+
+        if (freeList = null) {
+            let freeList = segment;
+            let freeList[next] = null;
+            return;
+        }
+
+        let nextSeg = freeList[next];
+
+        while (~(nextSeg = null)) {
+            let curr = nextSeg;
+            let nextSeg = nextSeg[next];
+        }
+        let curr[next] = segment;
+        let segment[next] = null;
+        do Memory.defrag();
+        return;
+    }    
+}

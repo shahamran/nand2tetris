@@ -1,0 +1,182 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A basic math library.
+ */
+class Math {
+
+    /** Initializes the library. */
+    function void init() {
+        return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if (x < 0) {
+            let x = -x;
+        }
+        return x;
+    }
+
+    function int shiftLeft(int x, int shift) {
+        while (shift > 0) {
+            let x = x + x;
+            let shift = shift - 1;
+        }
+        return x;
+    }
+
+    /** Returns the product of x and y. */
+    function int multiply(int x, int y) {
+        var int sum, shift, i, j;
+        // Special Cases
+        if (x = 1) {
+            return y;
+        }
+        else {
+            if (y = 1) {
+                return x;
+            }
+            else {
+                if (x = (-1)) {
+                    return (-y);
+                }
+                else {
+                    if (y = (-1)) {
+                        return (-x);
+                    }
+                }
+            }
+        }
+        if ((x = 0) | (y = 0)) {
+            return 0;
+        }
+        // Powers of two:
+        if (y = 2) {
+            return x + x;
+        }
+        if (y = 4) {
+            return (x + x) + (x + x);
+        }
+        if (y = 8) {
+            return Math.shiftLeft(x, 3);
+        }
+        if (y = 16) {
+            return Math.shiftLeft(x, 4);
+        }
+        if (y = 32) {
+            return Math.shiftLeft(x, 5);
+        }
+        if (y = 64) {
+            return Math.shiftLeft(x, 6);
+        }
+        if (y = 128) {
+            return Math.shiftLeft(x, 7);
+        }
+        if (y = 256) {
+            return Math.shiftLeft(x, 8);
+        }
+        let sum = 0;
+        let shift = x;
+        let i = 0;
+        let j = 1;
+        while (i < 16) {
+            if (~(j & y = 0)) {
+                let sum = sum + shift;
+            }
+            let shift = shift + shift;
+            let j = j + j;
+            let i = i + 1;
+        }
+        return sum;
+    }
+
+    /** Returns the integer part of x/y. */
+    function int divide(int x, int y) {
+        var int q, qy;
+        // Check for division by zero
+        if (y = 0) {
+            do Sys.error(3);
+            return -1;
+        }
+        // Check for negative numbers
+        if ((x < 0) | (y < 0)) {
+            if (~((x < 0) & (y < 0))) {
+                // Only one is negative
+                return -Math.divide(Math.abs(x), Math.abs(y));
+            }
+            else {
+                // This means both are negative.
+                let x = Math.abs(x);
+                let y = Math.abs(y);
+            }
+        }
+        // Special Cases
+        if (y = 1) {
+            return x;
+        }
+        if (y > x) {
+            return 0;
+        }
+        
+        if ((y + y) < 0) {
+            // Overflow..
+            let q = 0;
+        }
+        else {
+            let q = Math.divide(x, y + y);
+        }
+        let qy = Math.multiply(q, y);
+        if ((x - (qy + qy)) < y) {
+            return (q + q);
+        }
+        else {
+            return (q + q + 1);
+        }
+    }
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int y, j, two2j, z;
+        if (x < 0) {
+            do Sys.error(4);
+            return -1;
+        }
+		let y = 0;
+        let z = 0;
+		let j = 7;
+		let two2j = 128;
+		while (j > -1) {
+            if ((y + two2j) < 182) {
+                let z = y + two2j;
+               if (((z * z) - 1) < x) {
+                    let y = z;
+                }
+                if ((y * y) = x) {
+                    return y;
+                }
+            }
+			let two2j = two2j / 2;
+			let j = j - 1;
+		}
+		return y;
+	}
+     
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+        var int x;
+        let x = a;
+        if (b > a) {
+            let x = b;
+        }
+        return x;
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+        return -Math.max(-a, -b);
+    }
+}

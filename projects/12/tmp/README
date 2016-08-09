@@ -1,0 +1,33 @@
+nivkeren,ransha
+===============================================================================
+Niv Keren, ID 201478351, niv.keren@mail.huji.ac.il
+Ran Shaham, ID 203781000, ran.shaham1@mail.huji.ac.il
+===============================================================================
+
+                   Project 12- Operating System
+                  ------------------------------
+
+
+Submitted Files
+---------------
+README		  - This file.
+Array.jack    - An Array object class
+Keyboard.jack - Basic function for keyboard input.
+Math.jack	  - Basic math function
+Memory.jack   - Controll the computer memory
+Output.jack   - Printing text to the screen functions
+Screen.jack   - Drawing on the screen functions
+String.jack   - Basic string object.
+Sys.jack	  - Runs the operating system.
+
+
+Run command
+-----------
+
+
+Remarks
+-------
+* executed as suggested in the book design
+* "Mr. President, if I've learned one thing today,
+   it's that sometimes you have to not give a ..."
+	Morty Smith [Rick and Morty]

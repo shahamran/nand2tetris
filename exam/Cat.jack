@@ -1,0 +1,12 @@
+class Cat {
+    static int a;
+
+    function void Cow(int x) {
+        let a = x;
+        return;
+    }
+
+    method int Dog(int x) {
+        return x * x;
+    }
+}

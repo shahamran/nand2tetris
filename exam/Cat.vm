@@ -1,0 +1,12 @@
+function Cat.Cow 0
+push argument 0
+pop static 0
+push constant 0
+return
+function Cat.Dog 0
+push argument 0
+pop pointer 0
+push argument 1
+push argument 1
+call Math.multiply 2
+return

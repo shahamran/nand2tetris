@@ -1,0 +1,23 @@
+class Main {
+  function void prints(String s) {
+    do Output.printString("String: ");
+    do Output.printString(s);
+    do Output.println();
+    do Output.printString("Size: ");
+    do Output.printInt(s.length());
+    do Output.println();
+    return;
+  }
+
+  function void main() {
+    var String s;
+    let s = String.new(10);
+    do Main.prints(s);
+
+    do s.appendChar(45); // s.at(5) = '-'
+    do Main.prints(s);
+
+    do s.dispose();
+    return;
+  }
+}

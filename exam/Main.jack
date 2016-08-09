@@ -1,0 +1,28 @@
+class Main {
+    function int shiftRight(int x) {
+        var int res, bit, i;
+        let i = 0;
+        let bit = 1;
+        let res = 0;
+        while (i < 15) {
+            if (~ (((bit+bit)&x) = 0) ) {
+                let res = res + bit;
+            }
+            let bit = bit + bit;
+            let i = i + 1;
+        }
+        return res;
+    }
+    
+    function void main() {
+        var int x;
+        let x = 1;
+        while (x > 0) {
+            let x = Keyboard.readInt("Enter a number: ");
+            do Output.println();
+            do Output.printString("Shifted number is: ");
+            do Output.printInt(Main.shiftRight(x));
+        }
+        return;
+    }
+}
